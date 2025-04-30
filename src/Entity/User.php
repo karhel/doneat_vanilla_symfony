@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -42,6 +44,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 150)]
     private ?string $lastname = null;
+
+    /**
+     * @var Collection<int, Meal>
+     */
+    #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: 'createdBy', orphanRemoval: true)]
+    private Collection $createdMeals;
+
+    public function __construct()
+    {
+        $this->createdMeals = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -148,6 +161,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Meal>
+     */
+    public function getCreatedMeals(): Collection
+    {
+        return $this->createdMeals;
+    }
+
+    public function addCreatedMeal(Meal $createdMeal): static
+    {
+        if (!$this->createdMeals->contains($createdMeal)) {
+            $this->createdMeals->add($createdMeal);
+            $createdMeal->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedMeal(Meal $createdMeal): static
+    {
+        if ($this->createdMeals->removeElement($createdMeal)) {
+            // set the owning side to null (unless already changed)
+            if ($createdMeal->getCreatedBy() === $this) {
+                $createdMeal->setCreatedBy(null);
+            }
+        }
 
         return $this;
     }

@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Poster un repas{% endblock %}
+
+{% block body %}
+<section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
+    <div class="container">
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="notification is-danger">
+                {{ flash_error }}
+            </div>
+        {% endfor %}
+
+        <div class="columns is-centered">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                <div class="box">
+                    <h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
+
+                    {{ form_errors(mealCreateForm) }}
+
+                    {{ form_start(mealCreateForm) }}
+
+                        <div class="field">
+                            {{ form_label(mealCreateForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
+                            <div class="control">
+                                {{ form_widget(mealCreateForm.title, {'attr': {'class': 'input'}}) }}
+                            </div>
+                            {{ form_errors(mealCreateForm.title) }}
+                        </div>
+
+                        <div class="field">
+                            {{ form_label(mealCreateForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
+                            <div class="control">
+                                {{ form_widget(mealCreateForm.description, {'attr': {'class': 'textarea'}}) }}
+                            </div>
+                            {{ form_errors(mealCreateForm.description) }}
+                        </div>
+
+                        <div class="field">
+                            {{ form_label(mealCreateForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
+                            <div class="control select is-multiple is-fullwidth">
+                                {{ form_widget(mealCreateForm.tags, {'attr': {'class': ''}}) }}
+                            </div>
+                            {{ form_errors(mealCreateForm.tags) }}
+                        </div>
+
+
+                        <div class="field is-grouped is-justify-content-center">
+                            <div class="control">
+                                <button type="submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
+                            </div>
+                        </div>
+
+                    {{ form_end(mealCreateForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
