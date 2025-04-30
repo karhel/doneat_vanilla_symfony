@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                <div class="box">
+
+                    {% if error %}
+                        <div class="notification is-danger">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="notification is-info">
+                            Vous êtes déjà connecté en tant que {{ app.user.userIdentifier }},
+                            <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                        </div>
+                    {% endif %}
+
+                    <h1 class="title is-3 has-text-centered">Se connecter</h1>
+
+                    <form method="post">
+                        <div class="field">
+                            <label for="username" class="label">Adresse email</label>
+                            <div class="control">
+                                <input type="email" value="{{ last_username }}" name="_username" id="username" class="input" autocomplete="email" required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="password" class="label">Mot de passe</label>
+                            <div class="control">
+                                <input type="password" name="_password" id="password" class="input" autocomplete="current-password" required>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+                        {# Optionnel : Remember me #}
+                        {#
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="_remember_me" id="_remember_me">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                        #}
+
+                        <div class="field mt-4">
+                            <div class="control">
+                                <button class="button is-link is-fullwidth" type="submit">
+                                    Se connecter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
