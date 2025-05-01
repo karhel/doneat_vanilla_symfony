@@ -1,0 +1,30 @@
+<div class="ProductGrid" {{ attributes }}>
+
+    <div id="results" class="fixed-grid has-1-cols-mobile has-4-cols-desktop">
+
+        {% if page > 1 %} 
+        {# nécessaire pour conserver les données précédentes #}
+        <div class="grid is-row-gap-3" data-live-ignore="true" id="page--{{ page - 1 }}"> </div>
+        {% endif %}
+
+        
+        <div class="grid is-row-gap-3" id="page--{{ page }}" data-live-ignore="true">
+            {% for item in this.items %}
+                
+                {{ component('MealCard', { meal: item }) }}
+
+            {% endfor %}
+        </div>
+
+        
+        <div style="display: grid; place-content: center;padding-block: 2rem;">
+            {% if this.hasMore %}
+                <button data-action="live#action" data-live-action-param="more" class="button is-primary">
+                    Charger plus de repas
+                </button>
+            {% else %}
+                <div class="box">Tous les résultats ont été affichés</div>
+            {% endif %}
+        </div>
+    </div>
+</div>

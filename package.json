@@ -19,6 +19,9 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@symfony/stimulus-bridge": "^4.0.1",
+        "@symfony/ux-live-component": "^2.24.0",
+        "@symfony/ux-turbo": "^2.24.0",
         "bulma": "^1.0.4"
     }
 }

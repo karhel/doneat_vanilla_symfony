@@ -16,6 +16,24 @@ class MealRepository extends ServiceEntityRepository
         parent::__construct($registry, Meal::class);
     }
 
+    public function paginate($page, $perPage) : array
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.createdAt', 'DESC')
+            ->setMaxResults($perPage)
+            ->setFirstResult(($page - 1) * $perPage)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countAll() : int
+    {
+        return $this->createQueryBuilder('m')
+            ->select('count(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Meal[] Returns an array of Meal objects
     //     */
