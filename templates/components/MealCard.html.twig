@@ -3,7 +3,7 @@
     <div class="card-image">
         <figure class="image is-4by3">
         <img
-            src="https://bulma.io/assets/images/placeholders/1280x960.png"
+            src="{{ path('app_meal_picture_stream', { id: meal.id }) }}"
             alt="{{ meal.title }}"
         />
         </figure>

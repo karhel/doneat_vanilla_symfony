@@ -3,12 +3,14 @@
 namespace App\Form;
 
 use App\Entity\Meal;
-use App\Entity\MealTag;
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\MealTag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class CreateMealForm extends AbstractType
 {
@@ -17,6 +19,21 @@ class CreateMealForm extends AbstractType
         $builder
             ->add('title')
             ->add('description')
+
+            ->add('imageFile', FileType::class, [
+                'label' => "Envoyer une photo",
+                'mapped' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ]
+                    ])
+                ],
+                'required' => false,
+            ])
 
             ->add('tags', EntityType::class, [
                 'class' => MealTag::class,
