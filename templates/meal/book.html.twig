@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver un repas{% endblock %}
+
+{% block body %}
+<section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
+    <div class="container">
+
+    
+
+        <div class="columns is-centered">
+        
+            {{ component('MealCard', { meal: meal, actions: false }) }}
+
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen mt-3">
+                <div class="box">
+                    <h1 class="title is-3 has-text-centered">Valider la réservation du repas</h1>
+
+                    {{ form_errors(mealBookForm) }}
+
+                    {{ form_start(mealBookForm) }}
+                    
+                    <div class="field">
+                        {{ form_label(mealBookForm.bookedComment, "Commentaire, horaires, remarques...", {'label_attr': {'class': 'label'}}) }}
+                        <div class="control">
+                            {{ form_widget(mealBookForm.bookedComment, {'attr': {'class': 'textarea'}}) }}
+                        </div>
+                        {{ form_errors(mealBookForm.bookedComment) }}
+                    </div>
+    
+
+                    <div class="field is-grouped is-justify-content-center">
+                        <div class="control">
+                            <button type="submit" class="button is-link is-fullwidth">Valider la réservation</button>
+                        </div>
+                    </div>
+
+                    {{ form_end(mealBookForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

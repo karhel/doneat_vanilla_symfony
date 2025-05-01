@@ -9,4 +9,5 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class MealCard
 {
     public Meal $meal;
+    public bool $actions = true;
 }

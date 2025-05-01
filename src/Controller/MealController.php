@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Meal;
 use DateTimeImmutable;
+use App\Form\BookMealForm;
 use App\Form\CreateMealForm;
 use Psr\Log\LoggerInterface;
 use App\Service\FileUploader;
 use App\Repository\MealRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,8 +53,9 @@ final class MealController extends AbstractController
                 }
             }
 
-            $meal->setCreatedAt(new DateTimeImmutable());
-            $meal->setCreatedBy($this->getUser());
+            $meal
+                ->setCreatedAt(new DateTimeImmutable())
+                ->setCreatedBy($this->getUser());
 
             $entityManager->persist($meal);
             $entityManager->flush();
@@ -95,7 +98,7 @@ final class MealController extends AbstractController
                     $entityManager->flush();
 
                     return $this->redirectToRoute('app_meal');    
-                    
+
                 }
                 catch(FileException $e) {
 
@@ -107,7 +110,33 @@ final class MealController extends AbstractController
         return $this->render('meal/edit.html.twig', [
             'mealEditForm' => $form
         ]);
+    }
 
+
+    #[Route('/meal/book/{id<\d+>}', name: 'app_meal_book', methods: ['GET', 'POST'])]
+    #[IsGranted('book', subject: 'meal', message: "Vous ne pouvez pas réserver ce repas")]
+    public function book(Request $request, Meal $meal, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        $form = $this->createForm(BookMealForm::class, $meal);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $meal
+                ->setBookedAt(new DateTimeImmutable())
+                ->setBookedBy($this->getUser());
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_meal'); 
+        }
+
+        return $this->render('meal/book.html.twig', [
+            'mealBookForm' => $form,
+            'meal' => $meal
+        ]);
     }
 
     #[Route('/meal/picture/stream/{id<\d+>}', name: 'app_meal_picture_stream', methods: ['GET'])]

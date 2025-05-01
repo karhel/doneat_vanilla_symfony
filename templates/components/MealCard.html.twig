@@ -23,11 +23,16 @@
             </div>
         </div>    
 
+        {% if actions %}
         <footer class="card-footer">
-            <div class="card-footer-item"><a href="#" class="button is-medium is-success">Réserver !</a></div>
+            {% if is_granted('book', meal) %}
+            <div class="card-footer-item"><a href="{{ path('app_meal_book', { id: meal.id }) }}" class="button is-medium is-success">Réserver !</a></div>
+            {% endif %}
+
             {% if is_granted('edit', meal) %}
             <div class="card-footer-item"><a href="{{ path('app_meal_edit', { id: meal.id }) }}" class="button is-warning is-light">Modifier</a></div>
             {% endif %}
         </footer>
+        {% endif %}
     </div>
 </div>

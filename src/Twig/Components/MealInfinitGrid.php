@@ -35,11 +35,11 @@ final class MealInfinitGrid
 
     public function hasMore(): bool
     {
-        return $this->mealRepository->countAll() > ($this->page * self::PER_PAGE);
+        return $this->mealRepository->countAvailable() > ($this->page * self::PER_PAGE);
     }
 
     public function getItems(): array
     {
-        return $this->mealRepository->paginate($this->page, self::PER_PAGE);
+        return $this->mealRepository->paginateAvailable($this->page, self::PER_PAGE);
     }
 }

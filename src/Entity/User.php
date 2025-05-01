@@ -51,9 +51,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: 'createdBy', orphanRemoval: true)]
     private Collection $createdMeals;
 
+    /**
+     * @var Collection<int, Meal>
+     */
+    #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: 'bookedBy')]
+    private Collection $bookedMeals;
+
     public function __construct()
     {
         $this->createdMeals = new ArrayCollection();
+        $this->bookedMeals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +196,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($createdMeal->getCreatedBy() === $this) {
                 $createdMeal->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Meal>
+     */
+    public function getBookedMeals(): Collection
+    {
+        return $this->bookedMeals;
+    }
+
+    public function addBookedMeal(Meal $bookedMeal): static
+    {
+        if (!$this->bookedMeals->contains($bookedMeal)) {
+            $this->bookedMeals->add($bookedMeal);
+            $bookedMeal->setBookedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBookedMeal(Meal $bookedMeal): static
+    {
+        if ($this->bookedMeals->removeElement($bookedMeal)) {
+            // set the owning side to null (unless already changed)
+            if ($bookedMeal->getBookedBy() === $this) {
+                $bookedMeal->setBookedBy(null);
             }
         }
 

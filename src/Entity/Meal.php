@@ -38,6 +38,15 @@ class Meal
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 
+    #[ORM\ManyToOne(inversedBy: 'bookedMeals')]
+    private ?User $bookedBy = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $bookedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $bookedComment = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -128,6 +137,42 @@ class Meal
     public function setPicture(?string $picture): static
     {
         $this->picture = $picture;
+
+        return $this;
+    }
+
+    public function getBookedBy(): ?User
+    {
+        return $this->bookedBy;
+    }
+
+    public function setBookedBy(?User $bookedBy): static
+    {
+        $this->bookedBy = $bookedBy;
+
+        return $this;
+    }
+
+    public function getBookedAt(): ?\DateTimeImmutable
+    {
+        return $this->bookedAt;
+    }
+
+    public function setBookedAt(?\DateTimeImmutable $bookedAt): static
+    {
+        $this->bookedAt = $bookedAt;
+
+        return $this;
+    }
+
+    public function getBookedComment(): ?string
+    {
+        return $this->bookedComment;
+    }
+
+    public function setBookedComment(?string $bookedComment): static
+    {
+        $this->bookedComment = $bookedComment;
 
         return $this;
     }

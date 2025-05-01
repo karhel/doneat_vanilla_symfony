@@ -26,10 +26,33 @@ class MealRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function paginateAvailable($page, $perPage): array
+    {
+        
+        $qb = $this->createQueryBuilder('m');
+
+        return $qb->andWhere($qb->expr()->isNull('m.bookedBy'))
+            ->orderBy('m.createdAt', 'DESC')
+            ->setMaxResults($perPage)
+            ->setFirstResult(($page - 1) * $perPage)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countAll() : int
     {
         return $this->createQueryBuilder('m')
             ->select('count(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countAvailable(): int
+    {
+        $qb = $this->createQueryBuilder('m');
+
+        return $qb->select('count(m.id)')
+            ->andWhere($qb->expr()->isNull('m.bookedBy'))
             ->getQuery()
             ->getSingleScalarResult();
     }
