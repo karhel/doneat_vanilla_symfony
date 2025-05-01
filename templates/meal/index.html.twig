@@ -1,9 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MealController!{% endblock %}
+{% block title %}Les repas proches{% endblock %}
 
 {% block body %}
+<div class="container is-fluid">
 
-    {{ dump(meals) }}
+<h2 class="title is-2">Les repas près de chez moi</h2>
 
+<div class="buttons">
+  <a href="{{ path('app_meal_create') }}" class="button is-primary">Proposer un repas</a>
+  <button class="button is-link">....</button>
+</div>
+
+<div class="fixed-grid has-1-cols-mobile has-4-cols-desktop">
+  <div class="grid is-row-gap-3">
+    {% for meal in meals %}
+        <div class="cell card">
+        
+                <div class="card-image">
+                    <figure class="image is-4by3">
+                    <img
+                        src="https://bulma.io/assets/images/placeholders/1280x960.png"
+                        alt="{{ meal.title }}"
+                    />
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{{ meal.title }}</p>
+                            <p class="subtitle is-6">Par {{ meal.createdBy.firstname }} {{ meal.createdBy.lastname }}</p>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                    {{ meal.description }}
+                    <br />
+                    <time>{{ meal.createdAt|date }}</time>
+                    </div>
+                </div>
+                </div>
+
+
+    {% else %}
+        <p>Aucun repas n'a été trouvé... Postez le votre!</p>
+    {% endfor %}
+  </div>
+</div>
+</div>
 {% endblock %}
