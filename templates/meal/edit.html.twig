@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Poster un repas{% endblock %}
+{% block title %}Modifier un repas{% endblock %}
 
 {% block body %}
 <section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
@@ -9,47 +9,47 @@
         <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
                 <div class="box">
-                    <h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
+                    <h1 class="title is-3 has-text-centered">Modifier un repas déjà en ligne</h1>
 
-                    {{ form_errors(mealCreateForm) }}
+                    {{ form_errors(mealEditForm) }}
 
-                    {{ form_start(mealCreateForm) }}
+                    {{ form_start(mealEditForm) }}
 
                         <div class="field">
-                            {{ form_label(mealCreateForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(mealEditForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
                             <div class="control">
-                                {{ form_widget(mealCreateForm.title, {'attr': {'class': 'input'}}) }}
+                                {{ form_widget(mealEditForm.title, {'attr': {'class': 'input'}}) }}
                             </div>
-                            {{ form_errors(mealCreateForm.title) }}
+                            {{ form_errors(mealEditForm.title) }}
                         </div>
 
                         <div class="field">
-                            {{ form_label(mealCreateForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(mealEditForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
                             <div class="control">
-                                {{ form_widget(mealCreateForm.description, {'attr': {'class': 'textarea'}}) }}
+                                {{ form_widget(mealEditForm.description, {'attr': {'class': 'textarea'}}) }}
                             </div>
-                            {{ form_errors(mealCreateForm.description) }}
+                            {{ form_errors(mealEditForm.description) }}
                         </div>
 
                         <div class="file is-info has-name">
                             <label class="file-label">
-                                <input class="file-input" type="file" name="{{ field_name(mealCreateForm.imageFile) }}" />
+                                <input class="file-input" type="file" name="{{ field_name(mealEditForm.imageFile) }}" />
                                 <span class="file-cta">
                                     <span class="file-icon">
                                         <i class="fas fa-upload"></i>
                                     </span>
-                                    <span class="file-label">{{ field_label(mealCreateForm.imageFile) }}</span>
+                                    <span class="file-label">{{ field_label(mealEditForm.imageFile) }}</span>
                                 </span>
                                 <span class="file-name">...</span>
                             </label>
                         </div>
 
                         <div class="field">
-                            {{ form_label(mealCreateForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(mealEditForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
                             <div class="control select is-multiple is-fullwidth">
-                                {{ form_widget(mealCreateForm.tags, {'attr': {'class': ''}}) }}
+                                {{ form_widget(mealEditForm.tags, {'attr': {'class': ''}}) }}
                             </div>
-                            {{ form_errors(mealCreateForm.tags) }}
+                            {{ form_errors(mealEditForm.tags) }}
                         </div>
 
 
@@ -59,7 +59,7 @@
                             </div>
                         </div>
 
-                    {{ form_end(mealCreateForm) }}
+                    {{ form_end(mealEditForm) }}
                 </div>
             </div>
         </div>

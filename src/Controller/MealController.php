@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -62,6 +63,51 @@ final class MealController extends AbstractController
         return $this->render('meal/create.html.twig', [
             'mealCreateForm' => $form
         ]);
+    }
+
+    #[Route('meal/edit/{id<\d+>}', name: 'app_meal_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', subject: 'meal', message: "Vous n'avez pas les droits pour modifier ce repas")]
+    public function edit(Meal $meal, FileUploader $fileUploader, Request $request, 
+        EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    {  
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        $form = $this->createForm(CreateMealForm::class, $meal);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $picture = $form->get('imageFile')->getData();
+
+            if($picture) {
+
+                $currentPictureFilename = $meal->getPicture();
+
+                try {
+                    // Si une image existe déjà, je la supprime
+                    if($currentPictureFilename) {
+                        $fileUploader->remove($currentPictureFilename);
+                    }
+
+                    $newFilename = $fileUploader->upload($picture); //< Utilisation du service
+                    $meal->setPicture($newFilename);
+
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_meal');    
+                    
+                }
+                catch(FileException $e) {
+
+                    $logger->error($e->getMessage());
+                }
+            }        
+        }
+
+        return $this->render('meal/edit.html.twig', [
+            'mealEditForm' => $form
+        ]);
+
     }
 
     #[Route('/meal/picture/stream/{id<\d+>}', name: 'app_meal_picture_stream', methods: ['GET'])]

@@ -1,25 +1,33 @@
-<div class="cell card" {{ attributes }}>
-
-    <div class="card-image">
-        <figure class="image is-4by3">
-        <img
-            src="{{ path('app_meal_picture_stream', { id: meal.id }) }}"
-            alt="{{ meal.title }}"
-        />
-        </figure>
-    </div>
-    <div class="card-content">
-        <div class="media">
-            <div class="media-content">
-                <p class="title is-4">{{ meal.title }}</p>
-                <p class="subtitle is-6">Par {{ meal.createdBy.firstname }} {{ meal.createdBy.lastname }}</p>
+<div class="cell" {{ attributes }}>
+    <div class="card">
+        <div class="card-image">
+            <figure class="image is-4by3">
+            <img
+                src="{{ path('app_meal_picture_stream', { id: meal.id }) }}"
+                alt="{{ meal.title }}"
+            />
+            </figure>
+        </div>
+        <div class="card-content">
+            <div class="media">
+                <div class="media-content">
+                    <p class="title is-4">{{ meal.title }}</p>
+                    <p class="subtitle is-6">Par {{ meal.createdBy.firstname }} {{ meal.createdBy.lastname }}</p>
+                </div>
             </div>
-        </div>
 
-        <div class="content">
-            {{ meal.description }}
-            <br />
-            <time>{{ meal.createdAt|date }}</time>
-        </div>
+            <div class="content">
+                {{ meal.description }}
+                <br />
+                <time>{{ meal.createdAt|date }}</time>
+            </div>
+        </div>    
+
+        <footer class="card-footer">
+            <div class="card-footer-item"><a href="#" class="button is-medium is-success">Réserver !</a></div>
+            {% if is_granted('edit', meal) %}
+            <div class="card-footer-item"><a href="{{ path('app_meal_edit', { id: meal.id }) }}" class="button is-warning is-light">Modifier</a></div>
+            {% endif %}
+        </footer>
     </div>
 </div>
