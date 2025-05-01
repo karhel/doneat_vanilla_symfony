@@ -39,6 +39,7 @@ class CreateMealForm extends AbstractType
                 'class' => MealTag::class,
                 'choice_label' => 'name',
                 'multiple' => true,
+                'required' => false
             ])
         ;
     }
