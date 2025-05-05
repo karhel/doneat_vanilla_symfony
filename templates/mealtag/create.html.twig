@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau TAG{% endblock %}
+
+{% block body %}
+<section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
+    <div class="container">
+
+        <div class="columns is-centered">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                <div class="box">
+                    <h1 class="title is-3 has-text-centered">Créer un nouveau TAG</h1>
+
+                    {{ form_errors(mealTagCreateForm) }}
+
+                    {{ form_start(mealTagCreateForm) }}
+
+                        <div class="field">
+                            {{ form_label(mealTagCreateForm.name, "Nom du tag", {'label_attr': {'class': 'label'}}) }}
+                            <div class="control">
+                                {{ form_widget(mealTagCreateForm.name, {'attr': {'class': 'input'}}) }}
+                            </div>
+                            {{ form_errors(mealTagCreateForm.name) }}
+                        </div>                        
+
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    {{ form_widget(mealTagCreateForm.isAllergen) }}
+                                    Est un allergène
+                                </label>
+                            </div>
+                            {{ form_errors(mealTagCreateForm.isAllergen) }}
+                        </div>
+                        
+                        <div class="field">
+                            {{ form_label(mealTagCreateForm.icon, "Icone du tag", {'label_attr': {'class': 'label'}}) }}
+                            <div class="control">
+                                {{ form_widget(mealTagCreateForm.icon, {'attr': {'class': 'input', 'disabled': true }}) }}
+                            </div>
+                            {{ form_errors(mealTagCreateForm.icon) }}
+                        </div>
+
+                        
+                        <div class="field is-grouped is-justify-content-center">
+                            <div class="control">
+                                <button type="submit" class="button is-link is-fullwidth">Enregistrer</button>
+                            </div>
+                        </div>
+
+                    {{ form_end(mealTagCreateForm) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

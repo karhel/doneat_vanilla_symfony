@@ -6,10 +6,11 @@ use App\Entity\Meal;
 use DateTimeImmutable;
 use App\Form\BookMealForm;
 use App\Form\CreateMealForm;
+use App\Form\DeleteMealForm;
 use Psr\Log\LoggerInterface;
 use App\Service\FileUploader;
-use App\Repository\MealRepository;
 use Doctrine\ORM\EntityManager;
+use App\Repository\MealRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,12 +76,17 @@ final class MealController extends AbstractController
     {  
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
-        $form = $this->createForm(CreateMealForm::class, $meal);
-        $form->handleRequest($request);
+        $editForm = $this->createForm(CreateMealForm::class, $meal);
         
-        if ($form->isSubmitted() && $form->isValid()) {
+        $deleteForm = $this->createForm(DeleteMealForm::class, $meal, [
+            'action'    => $this->generateUrl('app_meal_delete', ['id' => $meal->getId()])
+        ]);
 
-            $picture = $form->get('imageFile')->getData();
+        $editForm->handleRequest($request);
+        
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+
+            $picture = $editForm->get('imageFile')->getData();
 
             if($picture) {
 
@@ -90,10 +96,10 @@ final class MealController extends AbstractController
                     // Si une image existe déjà, je la supprime
                     if($currentPictureFilename) {
                         $fileUploader->remove($currentPictureFilename);
-                    }
 
-                    $newFilename = $fileUploader->upload($picture); //< Utilisation du service
-                    $meal->setPicture($newFilename);
+                        $newFilename = $fileUploader->upload($picture); //< Utilisation du service
+                        $meal->setPicture($newFilename);
+                    }
 
                     $entityManager->flush();
 
@@ -108,7 +114,8 @@ final class MealController extends AbstractController
         }
 
         return $this->render('meal/edit.html.twig', [
-            'mealEditForm' => $form
+            'mealEditForm'      => $editForm,
+            'mealDeleteForm'    => $deleteForm
         ]);
     }
 
@@ -137,6 +144,22 @@ final class MealController extends AbstractController
             'mealBookForm' => $form,
             'meal' => $meal
         ]);
+    }
+
+    #[Route('/meal/delete/{id<\d+>}', name: 'app_meal_delete', methods: ['POST'])]
+    public function delete(Meal $meal, FileUploader $fileUploader, EntityManagerInterface $entityManager): Response
+    {
+        $picture = $meal->getPicture();
+        
+        // Si une image existe déjà, je la supprime
+        if($picture) {
+            $fileUploader->remove($picture);
+        }
+
+        $entityManager->remove($meal);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_meal'); 
     }
 
     #[Route('/meal/picture/stream/{id<\d+>}', name: 'app_meal_picture_stream', methods: ['GET'])]

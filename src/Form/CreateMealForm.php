@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Meal;
-use App\Entity\User;
 use App\Entity\MealTag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

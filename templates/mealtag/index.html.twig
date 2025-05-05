@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramétrages - Tags{% endblock %}
+
+{% block body %}
+<div class="container is-fluid">
+
+    <h2 class="title is-2">Paramétrage des tags/allergènes</h2>
+    <p>
+        Les TAG sont à sélectionner lors de la proposition d'un repas.<br>
+        Ils correspondent à des préférences alimentaires (vegan...) ou bien à des alergènes (gluten...). Ici vous pouvez en créer de nouveau.
+    </p>
+
+    <div class="buttons mt-5">
+        <a href="{{ path('app_mealtag_create') }}" class="button is-primary">Ajouter un nouveau TAG</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+            <th>Nom</th>
+            <th>Allergène ?</th>
+            <th>Icone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in mealTags %}
+            <tr>
+                <td>{{ tag.name }}</td>
+                <td> {{ tag.isAllergen }}</td>
+                <td> {{ tag.icon }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">Aucune donnée en base</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

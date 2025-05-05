@@ -60,9 +60,22 @@
                         </div>
 
                     {{ form_end(mealEditForm) }}
+
+                    
+                    {{ form_start(mealDeleteForm) }}
+
+                        <div class="field is-grouped is-justify-content-center">
+                            <div class="control">
+                                <button type="submit" class="button is-danger is-link is-fullwidth">Supprimer mon repas</button>
+                            </div>
+                        </div>
+
+                    {{ form_end(mealDeleteForm) }}
+
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 {% endblock %}
