@@ -47,6 +47,9 @@
 					<a class="navbar-item" href="{{ path('app_mealtag') }}">
 						Tag repas (allergènes)
 					</a>
+					<a class="navbar-item" href="{{ path('app_user') }}">
+						Gestion des utilisateurs
+					</a>
 				</div>
 			</div>
 		</div>
@@ -59,7 +62,7 @@
 						Mon profil
 					</a>
 					<div class="navbar-dropdown">
-						<a class="navbar-item">
+						<a class="navbar-item" href="{{ path('app_profile') }}">
 							Gérer mon compte
 						</a>
 						<a class="navbar-item" href="{{ path('app_logout') }}">

@@ -45,11 +45,19 @@
                         </div>
 
                         <div class="field">
-                            {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'label'}}) }}
                             <div class="control">
-                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'input'}}) }}
+                                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'input'}}) }}
                             </div>
-                            {{ form_errors(registrationForm.plainPassword) }}
+                            {{ form_errors(registrationForm.plainPassword.first) }}
+                        </div>
+
+                        <div class="field">
+                            {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'label'}}) }}
+                            <div class="control">
+                                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'input'}}) }}
+                            </div>
+                            {{ form_errors(registrationForm.plainPassword.second) }}
                         </div>
 
                         <div class="field">

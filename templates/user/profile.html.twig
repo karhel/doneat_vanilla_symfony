@@ -1,0 +1,88 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Modifier mon compte utilisateur{% endblock %}
+
+{% block content %}
+
+<h1 class="title is-3 has-text-centered">Modifier mon compte utilisateur</h1>
+
+ <div class="box">
+    <h2 class="title is-4 has-text-centered">Mes infos</h2>
+    {{ form_errors(updateUserInfo) }}
+
+    {{ form_start(updateUserInfo) }}
+
+        
+        <div class="field">
+            {{ form_label(updateUserInfo.email, "Adresse email", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.email, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.email) }}
+        </div>
+        
+        <div class="field">
+            {{ form_label(updateUserInfo.lastname, "Nom de famille", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.lastname, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.lastname) }}
+        </div>
+
+        <div class="field">
+            {{ form_label(updateUserInfo.firstname, "Prénom", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.firstname, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.firstname) }}
+        </div>
+    
+        <div class="field is-grouped is-justify-content-center">
+            <div class="control">
+                <button type="submit" class="button is-link is-fullwidth">Enregistrer</button>
+            </div>
+        </div>
+
+    {{ form_end(updateUserInfo) }}
+</div>
+    
+ <div class="box">
+    <h2 class="title is-4 has-text-centered">Modifier mon mot de passe</h2>
+    {{ form_errors(updateUserPassword) }}
+
+    {{ form_start(updateUserPassword) }}
+        
+        <div class="field">
+            {{ form_label(updateUserPassword.currentPassword, 'Mot de passe actuel', {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserPassword.currentPassword, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserPassword.currentPassword) }}
+        </div>        
+
+        <div class="field">
+            {{ form_label(updateUserPassword.plainPassword.first, 'Nouveau mot de passe', {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserPassword.plainPassword.first, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserPassword.plainPassword.first) }}
+        </div>
+
+        <div class="field">
+            {{ form_label(updateUserPassword.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserPassword.plainPassword.second, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserPassword.plainPassword.second) }}
+        </div>
+    
+        <div class="field is-grouped is-justify-content-center">
+            <div class="control">
+                <button type="submit" class="button is-link is-fullwidth">Modifier</button>
+            </div>
+        </div>
+    
+    {{ form_end(updateUserPassword) }}
+</div>
+
+{% endblock %}

@@ -18,6 +18,19 @@
   <body>
   {% include('includes/nav.inc.twig') %}
   
+  <section class="section is-flex is-justify-content-center is-align-items-center">
+    <div class="container">
+      {% for label, messages in app.flashes(['success', 'warning', 'danger', 'info']) %}
+        {% for message in messages %}
+        <div class="notification is-{{ label }}">
+          <button class="delete"></button>
+          {{ message }}
+        </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </section>
+
   {% block body %}{% endblock %}
 
   

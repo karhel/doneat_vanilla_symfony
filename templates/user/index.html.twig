@@ -1,0 +1,38 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Administration des utilisateurs{% endblock %}
+
+{% block content %}
+
+<h1 class="title is-3 has-text-centered">Gérer les comptes utilisateurs</h1>
+
+<table class="table is-widescreen">
+<thead>
+    <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Adresse email</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.lastname }}</td>
+        <td>{{ user.firstname }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+            
+            <a href="{{ path('app_user_delete', {'id': user.id}) }}" class="button is-danger">Supprimer</a>
+            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="button is-warning">Modifier</a>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4">Aucune donnée en base</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
