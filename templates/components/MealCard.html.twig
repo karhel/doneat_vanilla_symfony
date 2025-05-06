@@ -15,11 +15,30 @@
                     <p class="subtitle is-6">Par {{ meal.createdBy.firstname }} {{ meal.createdBy.lastname }}</p>
                 </div>
             </div>
-
+            
             <div class="content">
-                {{ meal.description }}
-                <br />
-                <time>{{ meal.createdAt|date }}</time>
+                <div>
+                    {{ meal.description }}
+                </div>
+                <div class="has-text-weight-bold mt-2">
+                    <p>Posté le <time>{{ meal.createdAt|date("d/m/Y") }}</time> à <time>{{ meal.createdAt|date("H:i") }}</time></p>
+                </div>
+            </div>
+
+            <div class="content mt-2">
+                <div class="grid is-gap-2">
+                {% for tag in meal.tags %}
+
+                    <div class="cell">
+                        <span class="icon-text has-text-{{ tag.isAllergen ? 'danger' : 'info' }}">
+                            <span class="icon">
+                                <i class="{{ tag.icon }}"></i>
+                            </span>
+                            <span>{{ tag.name }}</span>
+                        </span>
+                    </div>
+                {% endfor %}
+                </div>
             </div>
         </div>    
 

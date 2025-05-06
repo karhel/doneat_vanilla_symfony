@@ -85,32 +85,35 @@ final class MealController extends AbstractController
         $editForm->handleRequest($request);
         
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            try {
 
-            $picture = $editForm->get('imageFile')->getData();
+                $picture = $editForm->get('imageFile')->getData();
 
-            if($picture) {
+                if($picture) {
 
-                $currentPictureFilename = $meal->getPicture();
+                    $currentPictureFilename = $meal->getPicture();
 
-                try {
-                    // Si une image existe déjà, je la supprime
-                    if($currentPictureFilename) {
-                        $fileUploader->remove($currentPictureFilename);
+                    
+                        // Si une image existe déjà, je la supprime
+                        if($currentPictureFilename) {
+                            $fileUploader->remove($currentPictureFilename);
 
-                        $newFilename = $fileUploader->upload($picture); //< Utilisation du service
-                        $meal->setPicture($newFilename);
-                    }
+                            $newFilename = $fileUploader->upload($picture); //< Utilisation du service
+                            $meal->setPicture($newFilename);
+                        }
 
-                    $entityManager->flush();
+                }  
+                
 
-                    return $this->redirectToRoute('app_meal');    
+                $entityManager->flush();
 
-                }
-                catch(FileException $e) {
+                return $this->redirectToRoute('app_meal');    
+                
+            }
+            catch(FileException $e) {
 
-                    $logger->error($e->getMessage());
-                }
-            }        
+                $logger->error("UPDATE MEAL ERROR" . $e->getMessage());
+            }      
         }
 
         return $this->render('meal/edit.html.twig', [
