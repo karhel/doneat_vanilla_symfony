@@ -3,6 +3,7 @@
 {% block title %}Paramétrages - Tags{% endblock %}
 
 {% block body %}
+<section class="section is-flex is-justify-content-center is-align-items-center">
 <div class="container is-fluid">
 
     <h2 class="title is-2">Paramétrage des tags/allergènes</h2>
@@ -27,8 +28,8 @@
             {% for tag in mealTags %}
             <tr>
                 <td>{{ tag.name }}</td>
-                <td> {{ tag.isAllergen }}</td>
-                <td> {{ tag.icon }}</td>
+                <td> {% if tag.isAllergen %} <i class="fa-solid fa-triangle-exclamation"></i> {% endif %}</td>
+                <td> <i class="{{ tag.icon }}"></i></td>
             </tr>
             {% else %}
             <tr>
@@ -39,4 +40,5 @@
     </table>
 
 </div>
+</section>
 {% endblock %}
