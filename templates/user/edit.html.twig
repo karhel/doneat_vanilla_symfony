@@ -1,0 +1,71 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Modifier un compte utilisateur{% endblock %}
+
+{% block content %}
+
+<h1 class="title is-3 has-text-centered">Modifier un compte utilisateur</h1>
+
+ <div class="box">
+    <h2 class="title is-4 has-text-centered">Informations générales de l'utilisateur</h2>
+    {{ form_errors(updateUserInfo) }}
+
+    {{ form_start(updateUserInfo) }}
+        
+        <div class="field">
+            {{ form_label(updateUserInfo.email, "Adresse email", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.email, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.email) }}
+        </div>
+        
+        <div class="field">
+            {{ form_label(updateUserInfo.lastname, "Nom de famille", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.lastname, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.lastname) }}
+        </div>
+
+        <div class="field">
+            {{ form_label(updateUserInfo.firstname, "Prénom", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.firstname, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.firstname) }}
+        </div>
+    
+        <div class="field is-grouped is-justify-content-center">
+            <div class="control">
+                <button type="submit" class="button is-link is-fullwidth">Enregistrer</button>
+            </div>
+        </div>
+
+    {{ form_end(updateUserInfo) }}
+</div>
+    
+ <div class="box">
+    <h2 class="title is-4 has-text-centered">Rôles attribués à l'utilisateur</h2>
+    {{ form_errors(updateUserRoles) }}
+
+    {{ form_start(updateUserRoles) }}
+        
+        <div class="field">
+            {{ form_label(updateUserRoles.roles, "Rôle(s)", {'label_attr': {'class': 'label'}}) }}
+            <div class="control select is-multiple is-fullwidth">
+                {{ form_widget(updateUserRoles.roles, {'attr': {'class': ''}}) }}
+            </div>
+            {{ form_errors(updateUserRoles.roles) }}
+        </div>
+    
+        <div class="field is-grouped is-justify-content-center">
+            <div class="control">
+                <button type="submit" class="button is-link is-fullwidth">Enregistrer</button>
+            </div>
+        </div>
+    
+    {{ form_end(updateUserRoles) }}
+</div>
+
+{% endblock %}

@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\DeleteUserForm;
 use App\Form\UpdateUserForm;
 use App\Repository\UserRepository;
 use App\Form\UpdateUserPasswordForm;
+use App\Form\UpdateUserRolesForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +21,8 @@ final class UserController extends AbstractController
     #[Route('/admin/user', name: 'app_user')]
     public function index(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
@@ -27,6 +31,8 @@ final class UserController extends AbstractController
     #[Route('/profile', name: 'app_profile')]
     public function profile(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -55,7 +61,7 @@ final class UserController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', "Votre mot de passe a été mis à jour");
-                
+
                 return $this->redirectToRoute('app_profile');
             }
             else {
@@ -74,18 +80,58 @@ final class UserController extends AbstractController
     }
 
     #[Route('/admin/user/edit/{id<\d>}', name: 'app_user_edit')]
-    public function edit(User $user, EntityManagerInterface $entityManager): Response
+    public function edit(User $user, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        $editForm   = $this->createForm(UpdateUserForm::class, $user);
+        $rolesForm  = $this->createForm(UpdateUserRolesForm::class, $user);
+
+        $editForm->handleRequest($request);
+        $rolesForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+
+            $entityManager->flush();            
+            $this->addFlash('success', "Les informations ont été mises à jour");
+
+            return $this->redirectToRoute('app_user');
+        }
+        elseif($rolesForm->isSubmitted() && $rolesForm->isValid()) {
+
+
+            $entityManager->flush();
+
+            $this->addFlash('success', "Les rôles ont été mises à jour");
+            return $this->redirectToRoute('app_user');
+        }
+
         return $this->render('user/edit.html.twig', [
-            'user'  => $user
+            'user'              => $user,
+            'updateUserInfo'    => $editForm,
+            'updateUserRoles'   => $rolesForm
         ]);
     }
 
     #[Route('/admin/user/delete/{id<\d>}', name: 'app_user_delete')]
-    public function delete(User $user, EntityManagerInterface $entityManager): Response
+    public function delete(User $user, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        $deleteForm = $this->createForm(DeleteUserForm::class, $user);
+        $deleteForm->handleRequest($request);
+
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user');
+        }
+
         return $this->render('user/delete.html.twig', [
-            'user'  => $user
+            'user'  => $user,
+            'userDeleteForm' => $deleteForm
         ]);
     }
 }

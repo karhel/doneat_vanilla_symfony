@@ -6,8 +6,26 @@
     
     <h1 class="title is-3 has-text-centered">Supprimer un utilisateur</h1>
 
-    
-    <a href="{{ path('app_user') }}" class="button is-info">Annuler</a>
+    <p>Êtes-vous sûr de vouloir supprimer l'utilisateur <span>{{ user.firstname }} {{ user.lastname }}</span> ?</p>
+    <p>Il ne sera pas possible de revenir en arrière</p>
 
+        <div class="field is-grouped is-justify-content-center">
+            <div class="control">
+    
+                <a href="{{ path('app_user') }}" class="button is-info">Annuler</a>
+
+
+            </div>
+        </div>
+                    
+    {{ form_start(userDeleteForm) }}
+
+        <div class="field is-grouped is-justify-content-center">
+            <div class="control">
+                <button type="submit" class="button is-danger is-link is-fullwidth">Supprimer définitivement l'utilisateur</button>
+            </div>
+        </div>
+
+    {{ form_end(userDeleteForm) }}
 
 {% endblock %}
