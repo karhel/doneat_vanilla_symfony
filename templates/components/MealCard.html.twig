@@ -26,17 +26,15 @@
             </div>
 
             <div class="content mt-2">
-                <div class="grid is-gap-2">
+                <div class="field is-grouped is-grouped-multiline">
                 {% for tag in meal.tags %}
 
-                    <div class="cell">
-                        <span class="icon-text has-text-{{ tag.isAllergen ? 'danger' : 'info' }}">
-                            <span class="icon">
-                                <i class="{{ tag.icon }}"></i>
-                            </span>
-                            <span>{{ tag.name }}</span>
-                        </span>
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">{{ tag.name }}</span>
+                        <span class="tag is-{{ tag.isAllergen ? 'danger' : 'info' }}"><i class="{{ tag.icon }}"></i></span>
                     </div>
+                </div>
                 {% endfor %}
                 </div>
             </div>
