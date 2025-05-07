@@ -21,23 +21,12 @@
 				Accueil
 			</a>
 
+			{% if app.user %}
 			<a class="navbar-item" href="{{ path('app_meal') }}">
 				Mes repas
 			</a>
 
-			<div class="navbar-item has-dropdown is-hoverable">
-				<a class="navbar-link">
-					Aide
-				</a>
-				<div class="navbar-dropdown">
-					<a class="navbar-item">
-						A Propos
-					</a>
-					<a class="navbar-item">
-						Contact
-					</a>
-				</div>
-			</div>
+			{% if is_granted('ROLE_ADMIN') %}
 
 			<div class="navbar-item has-dropdown is-hoverable">
 				<a class="navbar-link">
@@ -49,6 +38,23 @@
 					</a>
 					<a class="navbar-item" href="{{ path('app_user') }}">
 						Gestion des utilisateurs
+					</a>
+				</div>
+			</div>
+			{% endif %}
+			
+			{% endif %}
+
+			<div class="navbar-item has-dropdown is-hoverable">
+				<a class="navbar-link">
+					Aide
+				</a>
+				<div class="navbar-dropdown">
+					<a class="navbar-item">
+						A Propos
+					</a>
+					<a class="navbar-item">
+						Contact
 					</a>
 				</div>
 			</div>
