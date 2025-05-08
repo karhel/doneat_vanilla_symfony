@@ -35,6 +35,14 @@
             </div>
             {{ form_errors(updateUserInfo.firstname) }}
         </div>
+
+        <div class="field">
+            {{ form_label(updateUserInfo.address, "Adresse postale", {'label_attr': {'class': 'label'}}) }}
+            <div class="control">
+                {{ form_widget(updateUserInfo.address, {'attr': {'class': 'input'}}) }}
+            </div>
+            {{ form_errors(updateUserInfo.address) }}
+        </div>
     
         <div class="field is-grouped is-justify-content-center">
             <div class="control">

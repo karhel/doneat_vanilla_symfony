@@ -1,0 +1,63 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Mes demandes en attente{% endblock %}
+
+{% block content %}
+
+<h2 class="title is-2">Mes demandes reçues en attente</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom du repas</th>
+            <th>Demande envoyée le</th>
+            <th>Par</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in bookReceived %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.requestedBy }}</td>
+            <td>
+                <a class="button" href="{{ path('app_meal_book_validate', { id: book.id }) }}">Répondre</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">Aucune donnée en base</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2 class="title is-2">Mes demandes envoyées en attente</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom du repas</th>
+            <th>Demande envoyée le</th>
+            <th>Par</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in bookRequests %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.requestedAt|date }}</td>
+            <td>
+                <a class="button" href="{{ path('app_meal_book_edit', { id: book.id }) }}">Modifier</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">Aucune donnée en base</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

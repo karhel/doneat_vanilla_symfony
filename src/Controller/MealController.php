@@ -146,33 +146,6 @@ final class MealController extends AbstractController
         ]);
     }
 
-
-    #[Route('/meal/book/{id<\d+>}', name: 'app_meal_book', methods: ['GET', 'POST'])]
-    #[IsGranted('book', subject: 'meal', message: "Vous ne pouvez pas réserver ce repas")]
-    public function book(Request $request, Meal $meal, EntityManagerInterface $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
-        $form = $this->createForm(BookMealForm::class, $meal);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $meal
-                ->setBookedAt(new DateTimeImmutable())
-                ->setBookedBy($this->getUser());
-
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_meal'); 
-        }
-
-        return $this->render('meal/book.html.twig', [
-            'mealBookForm' => $form,
-            'meal' => $meal
-        ]);
-    }
-
     #[Route('/meal/delete/{id<\d+>}', name: 'app_meal_delete', methods: ['POST'])]
     public function delete(Meal $meal, FileUploader $fileUploader, EntityManagerInterface $entityManager): Response
     {

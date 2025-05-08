@@ -1,86 +1,77 @@
-{% extends 'base.html.twig' %}
+{% extends 'content.html.twig' %}
 
 {% block title %}Poster un repas{% endblock %}
 
-{% block body %}
-<section class="section is-flex is-justify-content-center is-align-items-center">
-    <div class="container">
+{% block content %}
 
-        <div class="columns is-centered">
-            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-                <div class="box">
-                    <h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
-                        
-                        <div class="notification is-warning" id="geoloc_warning">
-                            <p>Les services de géolocalisation ne sont pas disponibles sur votre navigateur. L'adresse définie dans votre profil sera utilisée pour localiser le repas.</p>
-                            <p>Nous vous conseillons d'utiliser Google Chrome</p>
-                        </div>
+<h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
+    
+    <div class="notification is-warning" id="geoloc_warning">
+        <p>Les services de géolocalisation ne sont pas disponibles sur votre navigateur. L'adresse définie dans votre profil sera utilisée pour localiser le repas.</p>
+        <p>Nous vous conseillons d'utiliser Google Chrome</p>
+    </div>
 
-                    {{ form_errors(mealCreateForm) }}
+{{ form_errors(mealCreateForm) }}
 
-                    {{ form_start(mealCreateForm) }}
+{{ form_start(mealCreateForm) }}
 
-                        <div class="field">
-                            {{ form_label(mealCreateForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
-                            <div class="control">
-                                {{ form_widget(mealCreateForm.title, {'attr': {'class': 'input'}}) }}
-                            </div>
-                            {{ form_errors(mealCreateForm.title) }}
-                        </div>
+    <div class="field">
+        {{ form_label(mealCreateForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(mealCreateForm.title, {'attr': {'class': 'input'}}) }}
+        </div>
+        {{ form_errors(mealCreateForm.title) }}
+    </div>
 
-                        <div class="field">
-                            {{ form_label(mealCreateForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
-                            <div class="control">
-                                {{ form_widget(mealCreateForm.description, {'attr': {'class': 'textarea'}}) }}
-                            </div>
-                            {{ form_errors(mealCreateForm.description) }}
-                        </div>
+    <div class="field">
+        {{ form_label(mealCreateForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(mealCreateForm.description, {'attr': {'class': 'textarea'}}) }}
+        </div>
+        {{ form_errors(mealCreateForm.description) }}
+    </div>
 
-                        <div class="file is-info has-name">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="{{ field_name(mealCreateForm.imageFile) }}" />
-                                <span class="file-cta">
-                                    <span class="file-icon">
-                                        <i class="fas fa-upload"></i>
-                                    </span>
-                                    <span class="file-label">{{ field_label(mealCreateForm.imageFile) }}</span>
-                                </span>
-                                <span class="file-name">...</span>
-                            </label>
-                        </div>
+    <div class="file is-info has-name">
+        <label class="file-label">
+            <input class="file-input" type="file" name="{{ field_name(mealCreateForm.imageFile) }}" />
+            <span class="file-cta">
+                <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">{{ field_label(mealCreateForm.imageFile) }}</span>
+            </span>
+            <span class="file-name">...</span>
+        </label>
+    </div>
 
-                    <div class="field">
-                        {{ form_label(mealCreateForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
-                        <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
-                        <div class="control">
-                            {{ form_widget(mealCreateForm.address, {'attr': {'class': 'input'}}) }}
-                        </div>
-                        {{ form_errors(mealCreateForm.address) }}
-                    </div>
+<div class="field">
+    {{ form_label(mealCreateForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
+    <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
+    <div class="control">
+        {{ form_widget(mealCreateForm.address, {'attr': {'class': 'input'}}) }}
+    </div>
+    {{ form_errors(mealCreateForm.address) }}
+</div>
 
-                        <div class="field">
-                            {{ form_label(mealCreateForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
-                            <div class="control select is-multiple is-fullwidth">
-                                {{ form_widget(mealCreateForm.tags, {'attr': {'class': ''}}) }}
-                            </div>
-                            {{ form_errors(mealCreateForm.tags) }}
-                        </div>
+    <div class="field">
+        {{ form_label(mealCreateForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
+        <div class="control select is-multiple is-fullwidth">
+            {{ form_widget(mealCreateForm.tags, {'attr': {'class': ''}}) }}
+        </div>
+        {{ form_errors(mealCreateForm.tags) }}
+    </div>
 
-                        {{ form_widget(mealCreateForm.latitude) }}
-                        {{ form_widget(mealCreateForm.longitude) }}
+    {{ form_widget(mealCreateForm.latitude) }}
+    {{ form_widget(mealCreateForm.longitude) }}
 
-                        <div class="field is-grouped is-justify-content-center">
-                            <div class="control">
-                                <button type="submit" id="create_meal_form_submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
-                            </div>
-                        </div>
-
-                    {{ form_end(mealCreateForm) }}
-                </div>
-            </div>
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" id="create_meal_form_submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
         </div>
     </div>
-</section>
+
+{{ form_end(mealCreateForm) }}
+                    
 {% endblock %}
 
 {% block javascripts %}

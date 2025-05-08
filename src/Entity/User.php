@@ -74,10 +74,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Geocoder\Longitude()]
     private ?float $longitude = null;
 
+    /**
+     * @var Collection<int, MealBookRequest>
+     */
+    #[ORM\OneToMany(targetEntity: MealBookRequest::class, mappedBy: 'requestedBy')]
+    private Collection $mealBookRequests;
+
     public function __construct()
     {
         $this->createdMeals = new ArrayCollection();
         $this->bookedMeals = new ArrayCollection();
+        $this->mealBookRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -293,5 +300,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->latitude = $latitude;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, MealBookRequest>
+     */
+    public function getMealBookRequests(): Collection
+    {
+        return $this->mealBookRequests;
+    }
+
+    public function addMealBookRequest(MealBookRequest $mealBookRequest): static
+    {
+        if (!$this->mealBookRequests->contains($mealBookRequest)) {
+            $this->mealBookRequests->add($mealBookRequest);
+            $mealBookRequest->setRequestedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMealBookRequest(MealBookRequest $mealBookRequest): static
+    {
+        if ($this->mealBookRequests->removeElement($mealBookRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($mealBookRequest->getRequestedBy() === $this) {
+                $mealBookRequest->setRequestedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->firstname . " " . $this->firstname;
     }
 }

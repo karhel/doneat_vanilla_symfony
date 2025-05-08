@@ -1,0 +1,48 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Modifier une réservation{% endblock %}
+
+{% block content %}
+
+<h1 class="title is-2 has-text-centered">Modifier une demande</h1>
+
+<h2 class="title is-3 has-text-centered">Repas sélectionné</h2>
+{{ component('MealCard', { meal: bookRequest.meal, actions: false }) }}
+
+
+
+<h2 class="title is-3 has-text-centered mt-5">Informations de la réservation</h2>
+<p>La demande a été enregistrée le : {{ bookRequest.requestedAt|date }}</p>
+{{ form_errors(updateMealBookRequestForm) }}
+
+{{ form_start(updateMealBookRequestForm) }}
+
+    <div class="field">
+        {{ form_label(updateMealBookRequestForm.requestComment, "Commentaire, informations importantes...", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(updateMealBookRequestForm.requestComment, {'attr': {'class': 'textarea'}}) }}
+        </div>
+        {{ form_errors(updateMealBookRequestForm.requestComment) }}
+    </div>
+    
+
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" class="button is-link is-fullwidth">Modifier ma demande de réservation</button>
+        </div>
+    </div>
+
+{{ form_end(updateMealBookRequestForm) }}
+
+
+{{ form_start(deleteMealBookRequestForm) }}
+
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" class="button is-danger is-link is-fullwidth">Annuler ma demande</button>
+        </div>
+    </div>
+
+{{ form_end(deleteMealBookRequestForm) }}
+
+{% endblock %}

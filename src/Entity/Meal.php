@@ -61,9 +61,16 @@ class Meal
     #[Geocoder\Longitude()]
     private ?float $longitude = null;
 
+    /**
+     * @var Collection<int, MealBookRequest>
+     */
+    #[ORM\OneToMany(targetEntity: MealBookRequest::class, mappedBy: 'meal')]
+    private Collection $bookRequests;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->bookRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -223,6 +230,36 @@ class Meal
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MealBookRequest>
+     */
+    public function getBookRequests(): Collection
+    {
+        return $this->bookRequests;
+    }
+
+    public function addBookRequest(MealBookRequest $bookRequest): static
+    {
+        if (!$this->bookRequests->contains($bookRequest)) {
+            $this->bookRequests->add($bookRequest);
+            $bookRequest->setMeal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBookRequest(MealBookRequest $bookRequest): static
+    {
+        if ($this->bookRequests->removeElement($bookRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($bookRequest->getMeal() === $this) {
+                $bookRequest->setMeal(null);
+            }
+        }
 
         return $this;
     }

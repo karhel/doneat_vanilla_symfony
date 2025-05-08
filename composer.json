@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "fresh/doctrine-enum-bundle": "^10.1",
         "geocoder-php/google-maps-provider": "^4.8",
         "geocoder-php/nominatim-provider": "^5.8",
         "nyholm/psr7": "^1.8",
