@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: 'bookedBy')]
     private Collection $bookedMeals;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $mainAddress = null;
+
     public function __construct()
     {
         $this->createdMeals = new ArrayCollection();
@@ -228,6 +231,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $bookedMeal->setBookedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMainAddress(): ?Address
+    {
+        return $this->mainAddress;
+    }
+
+    public function setMainAddress(?Address $mainAddress): static
+    {
+        $this->mainAddress = $mainAddress;
 
         return $this;
     }

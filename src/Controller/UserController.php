@@ -3,17 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Address;
 use App\Form\DeleteUserForm;
 use App\Form\UpdateUserForm;
-use App\Repository\UserRepository;
-use App\Form\UpdateUserPasswordForm;
 use App\Form\UpdateUserRolesForm;
+use App\Service\GeocodingService;
+use App\Repository\UserRepository;
+use App\Form\UpdateUserAddressForm;
+use App\Form\UpdateUserPasswordForm;
+use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserController extends AbstractController
@@ -29,7 +32,7 @@ final class UserController extends AbstractController
     }
     
     #[Route('/profile', name: 'app_profile')]
-    public function profile(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function profile(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, GeocodingService $geocodingService): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
@@ -38,9 +41,11 @@ final class UserController extends AbstractController
 
         $editForm = $this->createForm(UpdateUserForm::class, $user);
         $pwdForm = $this->createForm(UpdateUserPasswordForm::class, $user);
+        $addrForm = $this->createForm(UpdateUserAddressForm::class, $user->getMainAddress());
 
         $editForm->handleRequest($request);
         $pwdForm->handleRequest($request);
+        $addrForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
 
@@ -71,11 +76,33 @@ final class UserController extends AbstractController
                 $pwdForm->addError($error);
             }
         }
+        else if ($addrForm->isSubmitted() && $addrForm->isValid()) {
+
+            $oldAddress = $user->getMainAddress();
+            if($oldAddress) {
+                $entityManager->remove($oldAddress);
+            }
+
+            $objAddress = $addrForm->getData();
+
+            $strFullAddress = printf("%s, %s %s %s, %s", $objAddress->getNumber(), $objAddress->getRoad(), $objAddress->getPostalCode(), $objAddress->getCity(), $objAddress->getCountry());
+            $location = $geocodingService->geocodeAddress($strFullAddress);
+
+            $objAddress->setLatitude($location['latitude'])->setLongitude($location['longitude']);
+
+            $user->setMainAddress($objAddress);
+
+            $entityManager->persist($objAddress);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_profile');
+        }
 
         return $this->render('user/profile.html.twig', [
             'user'                  => $user,
             'updateUserInfo'        => $editForm,
-            'updateUserPassword'    => $pwdForm
+            'updateUserPassword'    => $pwdForm,
+            'updateUserAddress'     => $addrForm
         ]);
     }
 

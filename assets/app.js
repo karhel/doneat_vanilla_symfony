@@ -33,11 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Gestion du champ d'envoi de fichier des formulaire pour que le nom du fichier apparaisse une fois sélectionné
 const fileInput = document.querySelector(".file input[type=file]");
 
+if(fileInput) {
   fileInput.onchange = () => {
 
-    if (fileInput.files.length > 0) {
+      if (fileInput.files.length > 0) {
 
-      const fileName = document.querySelector(".file .file-name");
-      fileName.textContent = fileInput.files[0].name;
-    }
-  };
+        const fileName = document.querySelector(".file .file-name");
+        fileName.textContent = fileInput.files[0].name;
+      }
+    };
+}

@@ -1,0 +1,13 @@
+# See the docs at https://github.com/geocoder-php/BazingaGeocoderBundle
+bazinga_geocoder:
+    providers:
+        nominatim:
+            factory: Bazinga\GeocoderBundle\ProviderFactory\NominatimFactory
+            options:
+                root_url: https://nominatim.openstreetmap.org
+
+
+when@dev:
+    bazinga_geocoder:
+        fake_ip:
+            use_faker: true # default false
