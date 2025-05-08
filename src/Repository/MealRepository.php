@@ -16,6 +16,35 @@ class MealRepository extends ServiceEntityRepository
         parent::__construct($registry, Meal::class);
     }
 
+    public function findByDistanceFrom(float $latitude, float $longitude, float $distance) : array
+    {
+        $conn   = $this->getEntityManager()->getConnection();
+        $sql    = "
+            SELECT m.*,
+                (6371 * acos(cos(radians(:lat)) * cos(radians(m.latitude)) * cos(radians(m.longitude) - radians(:lng)) + sin(radians(:lat)) * sin(radians(m.latitude)))) AS distance
+            FROM meal AS m
+        ";
+        
+        $stmt   = $conn->prepare($sql);
+        $result = $stmt->executeQuery([
+            'lat'   => $latitude,
+            'lng'   => $longitude,
+            //'dist'  => $distance
+        ]);
+
+
+        /*
+        $haversineFormula = "(6371 * acos(cos(radians(:lat)) * cos(radians(p.latitude)) * cos(radians(p.longitude) - radians(:lng)) + sin(radians(:lat)) * sin(radians(p.latitude))))";
+        $query = $this->getEntityManager()
+            ->createQuery(
+                "SELECT m FROM \App\Entity\Meal m WHERE {$haversineFormula} <= :dist"
+            )
+            ->setParameters();
+            */
+        
+        return $result->fetchAllAssociative();
+    }
+
     public function paginate($page, $perPage) : array
     {
         return $this->createQueryBuilder('m')
@@ -28,7 +57,6 @@ class MealRepository extends ServiceEntityRepository
 
     public function paginateAvailable($page, $perPage): array
     {
-        
         $qb = $this->createQueryBuilder('m');
 
         return $qb->andWhere($qb->expr()->isNull('m.bookedBy'))

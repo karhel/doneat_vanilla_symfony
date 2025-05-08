@@ -25,3 +25,14 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%kernel.project_dir%/var/uploads/meals'
+
+    Bazinga\GeocoderBundle\Mapping\Driver\AttributeDriver:
+        class: Bazinga\GeocoderBundle\Mapping\Driver\AttributeDriver
+
+    Bazinga\GeocoderBundle\Doctrine\ORM\GeocoderListener:
+        class: Bazinga\GeocoderBundle\Doctrine\ORM\GeocoderListener
+        arguments:
+            - '@bazinga_geocoder.provider.nominatim'
+            - '@Bazinga\GeocoderBundle\Mapping\Driver\AttributeDriver'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }

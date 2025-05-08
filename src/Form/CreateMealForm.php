@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Bazinga\GeocoderBundle\Validator\Constraint\Address;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
@@ -19,6 +20,14 @@ class CreateMealForm extends AbstractType
         $builder
             ->add('title')
             ->add('description')
+            
+            ->add('address', null, [
+                'constraints' => [
+                    new Address([
+                        'message' => "L'adresse saisie n'est pas reconnue",
+                    ]),
+                ]
+            ])
 
             ->add('latitude',   HiddenType::class)
             ->add('longitude',  HiddenType::class)

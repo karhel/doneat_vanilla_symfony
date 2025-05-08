@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Bazinga\GeocoderBundle\Mapping\Annotations as Geocoder;
 
 #[ORM\Entity(repositoryClass: MealRepository::class)]
+#[Geocoder\Geocodeable()]
 class Meal
 {
     #[ORM\Id]
@@ -47,10 +49,16 @@ class Meal
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bookedComment = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Geocoder\Address()]
+    private ?string $address = null;
+    
+    #[ORM\Column(nullable: true)]
+    #[Geocoder\Latitude()]
     private ?float $latitude = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
+    #[Geocoder\Longitude()]
     private ?float $longitude = null;
 
     public function __construct()
@@ -203,6 +211,18 @@ class Meal
     public function setLongitude(float $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

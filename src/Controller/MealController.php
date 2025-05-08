@@ -10,7 +10,6 @@ use App\Form\CreateMealForm;
 use App\Form\DeleteMealForm;
 use Psr\Log\LoggerInterface;
 use App\Service\FileUploader;
-use Doctrine\ORM\EntityManager;
 use App\Repository\MealRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,14 +21,27 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 final class MealController extends AbstractController
 {
-    #[Route('/meal', name: 'app_meal')]
-    public function index(MealRepository $mealRepository): Response
-    {
-        $meals = $mealRepository->findAll();
+    #[Route('/meal/geoloc', name: 'app_meal_geo_test')]
+    public function geoloc(MealRepository $mealRepository, Request $request): Response
+    {        
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
 
-        return $this->render('meal/index.html.twig', [
-            'meals' => $meals,
+        $meals = $mealRepository->findByDistanceFrom(
+            $currentUser->getMainAddress()->getLatitude(), 
+            $currentUser->getMainAddress()->getLongitude(), 
+            10); // Distance de 10 kms
+
+        return $this->render('meal/geoloc.html.twig', [
+            'user' => $currentUser,
+            'meals' => $meals
         ]);
+    }
+
+    #[Route('/meal', name: 'app_meal')]
+    public function index(): Response
+    {
+        return $this->render('meal/index.html.twig');
     }
 
     #[Route('/meal/post', name: 'app_meal_create')]
@@ -41,6 +53,8 @@ final class MealController extends AbstractController
         $currentUser = $this->getUser();
 
         $meal = new Meal();
+        $meal->setAddress($currentUser->getAddress());
+        
         $form = $this->createForm(CreateMealForm::class, $meal);
         $form->handleRequest($request);
         

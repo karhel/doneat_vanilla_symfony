@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les repas proches{% endblock %}
+
+{% block body %}
+<div class="container is-fluid">
+    {{ dump(user) }}
+
+    <h2 class="title is-2">Les repas près de chez moi</h2>
+
+    {{ dump(meals) }}
+
+</div>
+{% endblock %}
