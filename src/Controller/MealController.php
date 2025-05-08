@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Meal;
+use App\Entity\User;
 use DateTimeImmutable;
 use App\Form\BookMealForm;
 use App\Form\CreateMealForm;
@@ -36,6 +37,9 @@ final class MealController extends AbstractController
     {             
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
         $meal = new Meal();
         $form = $this->createForm(CreateMealForm::class, $meal);
         $form->handleRequest($request);
@@ -56,7 +60,13 @@ final class MealController extends AbstractController
 
             $meal
                 ->setCreatedAt(new DateTimeImmutable())
-                ->setCreatedBy($this->getUser());
+                ->setCreatedBy($currentUser);
+
+            if(!($meal->getLatitude() && $meal->getLongitude())) {
+                $meal
+                    ->setLatitude($currentUser->getMainAddress()->getLatitude())
+                    ->setLongitude($currentUser->getMainAddress()->getLongitude());
+            }
 
             $entityManager->persist($meal);
             $entityManager->flush();

@@ -3,13 +3,18 @@
 {% block title %}Poster un repas{% endblock %}
 
 {% block body %}
-<section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
+<section class="section is-flex is-justify-content-center is-align-items-center">
     <div class="container">
 
         <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
                 <div class="box">
                     <h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
+                        
+                        <div class="notification is-warning" id="geoloc_warning">
+                            <p>Les services de géolocalisation ne sont pas disponibles sur votre navigateur. L'adresse définie dans votre profil sera utilisée pour localiser le repas.</p>
+                            <p>Nous vous conseillons d'utiliser Google Chrome</p>
+                        </div>
 
                     {{ form_errors(mealCreateForm) }}
 
@@ -52,10 +57,12 @@
                             {{ form_errors(mealCreateForm.tags) }}
                         </div>
 
+                        {{ form_widget(mealCreateForm.latitude) }}
+                        {{ form_widget(mealCreateForm.longitude) }}
 
                         <div class="field is-grouped is-justify-content-center">
                             <div class="control">
-                                <button type="submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
+                                <button type="submit" id="create_meal_form_submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
                             </div>
                         </div>
 
@@ -65,4 +72,48 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const inpLatitude   = document.getElementById('create_meal_form_latitude');
+        const inpLongitude  = document.getElementById('create_meal_form_longitude');
+
+        const btnSubmit     = document.getElementById('create_meal_form_submit');
+        const pWarning      = document.getElementById('geoloc_warning');
+
+        //btnSubmit.disabled = true;
+        pWarning.hidden = true;
+
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+
+                    if (inpLatitude && inpLongitude) {
+
+                        inpLatitude.value = position.coords.latitude;
+                        inpLongitude.value = position.coords.longitude;
+
+                        //btnSubmit.disabled = false;
+                    }
+                },
+
+                function (error) {
+
+                    pWarning.hidden = false;
+                    console.error(error);
+                }
+            );
+        } else {
+            console.warn('La géolocalisation n’est pas disponible dans ce navigateur.');
+        }
+    });
+</script>
+
+
 {% endblock %}

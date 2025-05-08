@@ -1,5 +1,6 @@
 <div class="cell" {{ attributes }}>
     <div class="card">
+        {% if meal.picture %}
         <div class="card-image">
             <figure class="image is-4by3">
             <img
@@ -8,6 +9,7 @@
             />
             </figure>
         </div>
+        {% endif %}
         <div class="card-content">
             <div class="media">
                 <div class="media-content">
@@ -36,6 +38,13 @@
                     </div>
                 </div>
                 {% endfor %}
+                </div>
+            </div>
+            
+            <div class="content mt-2">
+                <div>
+                    <p>Latitude: <span>{{ meal.latitude }}</span></p>
+                    <p>Longitude: <span>{{ meal.longitude }}</span></p>
                 </div>
             </div>
         </div>    
