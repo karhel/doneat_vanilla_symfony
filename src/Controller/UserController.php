@@ -106,7 +106,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/user/edit/{id<\d>}', name: 'app_user_edit')]
+    #[Route('/admin/user/edit/{id<\d+>}', name: 'app_user_edit')]
     public function edit(User $user, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
@@ -140,7 +140,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/user/delete/{id<\d>}', name: 'app_user_delete')]
+    #[Route('/admin/user/delete/{id<\d+>}', name: 'app_user_delete')]
     public function delete(User $user, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
