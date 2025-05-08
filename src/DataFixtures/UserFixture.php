@@ -32,7 +32,9 @@ class UserFixture extends Fixture
             ->setEmail('jdoe@app.net')
             ->setFirstname('John')
             ->setLastname('Doe')
-            ->setPassword($this->userPasswordHasher->hashPassword($objUser, $plainPassword));
+            ->setPassword($this->userPasswordHasher->hashPassword($objUser, $plainPassword))
+            ->setRoles(["ROLE_ADMIN"])
+            ->setAddress($this->faker->address());
 
         $manager->persist($objUser);
         
@@ -42,6 +44,7 @@ class UserFixture extends Fixture
             $objUser->setEmail($this->faker->email())
                 ->setFirstname($this->faker->firstName())
                 ->setLastname($this->faker->lastName())
+                ->setAddress($this->faker->address())
                 ->setPassword($this->userPasswordHasher->hashPassword($objUser, $this->faker->password()));
 
             $manager->persist($objUser);

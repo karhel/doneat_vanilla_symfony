@@ -53,6 +53,7 @@ class MealFixture extends Fixture implements DependentFixtureInterface
                     ->setTitle($this->faker->sentence(5))
                     ->setDescription($this->faker->text())
                     ->setCreatedBy($user)
+                    ->setAddress($user->getAddress())
                     ->setCreatedAt(new DateTimeImmutable());
 
                 $manager->persist($objMeal);

@@ -45,6 +45,15 @@
                         </div>
 
                         <div class="field">
+                            {{ form_label(mealEditForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
+                            <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
+                            <div class="control">
+                                {{ form_widget(mealEditForm.address, {'attr': {'class': 'input'}}) }}
+                            </div>
+                            {{ form_errors(mealEditForm.address) }}
+                        </div>
+
+                        <div class="field">
                             {{ form_label(mealEditForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
                             <div class="control select is-multiple is-fullwidth">
                                 {{ form_widget(mealEditForm.tags, {'attr': {'class': ''}}) }}
