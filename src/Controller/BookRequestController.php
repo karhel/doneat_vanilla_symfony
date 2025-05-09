@@ -24,14 +24,52 @@ final class BookRequestController extends AbstractController
     #[Route('/book/request', name: 'app_book_request')]
     public function index(MealBookRequestRepository $mealBookRequestRepository): Response
     {
-        $bookRequests = $mealBookRequestRepository->findByRequestedBy($this->getUser());
-        $bookReceived = $mealBookRequestRepository->findByCreatedBy($this->getUser());
+        $requestedPending   = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_PENDING);
+        $requestedValidated = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED);
+        $requestedRefused   = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_REFUSED, true);
+        $requestedClosed    = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED, true);
+
+        $receivedPending    = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_PENDING);
+        $receivedValidated  = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED);
+        $receivedRefused    = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_REFUSED, true);
+        $receivedClosed     = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED, true);
 
         return $this->render('book_request/index.html.twig', [
-            'bookRequests'  => $bookRequests,
-            'bookReceived'  => $bookReceived
+            'requestedPending'      => $requestedPending,
+            'requestedValidated'    => $requestedValidated,
+            'requestedRefused'      => $requestedRefused,
+            'requestedClosed'       => $requestedClosed,
+
+            'receivedPending'       => $receivedPending,
+            'receivedValidated'     => $receivedValidated,
+            'receivedRefused'       => $receivedRefused,
+            'receivedClosed'        => $receivedClosed
         ]);
     }
+
+    #[Route('/book/request/archives', name: 'app_book_request_archives')]
+    public function archives(MealBookRequestRepository $mealBookRequestRepository): Response
+    {
+        $requestedValidated = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED);
+        $requestedRefused   = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_REFUSED, true);
+        $requestedClosed    = $mealBookRequestRepository->findByStatusAndRequestedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED, false);
+
+        $receivedValidated  = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED);
+        $receivedRefused    = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_REFUSED, true);
+        $receivedClosed     = $mealBookRequestRepository->findByStatusAndMealCreatedBy($this->getUser(), MealBookRequest::STATUS_VALIDATED, true);
+
+        return $this->render('book_request/archives.html.twig', [
+            'requestedValidated'    => $requestedValidated,
+            'requestedRefused'      => $requestedRefused,
+            'requestedClosed'       => $requestedClosed,
+
+            'receivedValidated'     => $receivedValidated,
+            'receivedRefused'       => $receivedRefused,
+            'receivedClosed'        => $receivedClosed
+        ]);
+    }
+
+    
 
     #[Route('/meal/book/{id<\d+>}', name: 'app_meal_book_request', methods: ['GET', 'POST'])]
     #[IsGranted('book', subject: 'meal', message: "Vous ne pouvez pas réserver ce repas")]
@@ -51,7 +89,7 @@ final class BookRequestController extends AbstractController
             $bookRequest->setRequestedAt(new \DateTimeImmutable())
                 ->setRequestedBy($this->getUser())
                 ->setIsClosed(false)
-                ->setStatus(0);
+                ->setStatus(MealBookRequest::STATUS_PENDING);
 
             $entityManager->persist($bookRequest);
             $entityManager->flush();
@@ -117,12 +155,12 @@ final class BookRequestController extends AbstractController
             if($btnValidate->isClicked()) {
                 
                 $mealbookRequest->setValidatedAt(new \DateTimeImmutable())
-                    ->setStatus(1);
+                    ->setStatus(MealBookRequest::STATUS_VALIDATED);
             }
             elseif($btnRefuse->isClicked()) {
                 
                 $mealbookRequest->setValidatedAt(new \DateTimeImmutable())
-                    ->setStatus(2)
+                    ->setStatus(MealBookRequest::STATUS_REFUSED)
                     ->setisClosed(true);                
             }
 

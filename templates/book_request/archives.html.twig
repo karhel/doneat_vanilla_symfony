@@ -1,28 +1,28 @@
 {% extends 'content.html.twig' %}
 
-{% block title %}Mes demandes en attente{% endblock %}
+{% block title %}Mes demandes archivées (terminées){% endblock %}
 
 {% block content %}
 
-<h2 class="title is-2">Mes demandes reçues en cours</h2>
+<h2 class="title is-2">Mes demandes reçues refusées</h2>
 <table class="table">
     <thead>
         <tr>
             <th>Nom du repas</th>
             <th>Demande envoyée le</th>
             <th>Par</th>
-            <th>Action</th>
+            <th>Demande refusée le</th>
+            <th>Commentaire de refus</th>
         </tr>
     </thead>
     <tbody>
-        {% for book in receivedPending %}
+        {% for book in receivedRefused %}
         <tr>
             <td>{{ book.meal.title }}</td>
             <td>{{ book.requestedAt|date }}</td>
             <td>{{ book.requestedBy }}</td>
-            <td>
-                <a class="button" href="{{ path('app_meal_book_validate', { id: book.id }) }}">Répondre</a>
-            </td>
+            <td>{{ book.validatedAt|date }}</td>
+            <td>{{ book.validationComment }}</td>
         </tr>
         {% else %}
         <tr>
@@ -34,94 +34,94 @@
     </tbody>
 </table>
 
-
-<h2 class="title is-2">Mes demandes reçues validées, à cloturer</h2>
-<p>Pensez à clore vos demandes reçues une fois que le repas a été récupéré</p>
+<h2 class="title is-2">Mes demandes reçues validée et cloturées</h2>
 <table class="table">
     <thead>
         <tr>
             <th>Nom du repas</th>
             <th>Demande envoyée le</th>
             <th>Par</th>
-            <th>Action</th>
+            <th>Demande refusée le</th>
+            <th>Commentaire de refus</th>
         </tr>
     </thead>
     <tbody>
-        {% for book in requestedValidated %}
+        {% for book in receivedClosed %}
         <tr>
             <td>{{ book.meal.title }}</td>
             <td>{{ book.requestedAt|date }}</td>
-            <td>
-                <a class="button" href="{{ path('app_meal_book_close', { id: book.id }) }}">Cloturer</a>
-            </td>
+            <td>{{ book.requestedBy }}</td>
+            <td>{{ book.validatedAt|date }}</td>
+            <td>{{ book.validationComment }}</td>
         </tr>
         {% else %}
         <tr>
             <td colspan="4">
                 <p>Aucune donnée en base</p>
-                <a class="button" href="{{ path('app_book_request_archives') }}">Accéder aux archives</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<h2 class="title is-2">Mes demandes envoyées en cours</h2>
+<h2 class="title is-2">Mes demandes envoyées refusées</h2>
 <table class="table">
     <thead>
         <tr>
             <th>Nom du repas</th>
             <th>Demande envoyée le</th>
+            <th>Demande refusée le</th>
             <th>Par</th>
-            <th>Action</th>
+            <th>Commentaire de refus</th>
         </tr>
     </thead>
     <tbody>
-        {% for book in requestedPending %}
+        {% for book in requestedRefused %}
         <tr>
             <td>{{ book.meal.title }}</td>
             <td>{{ book.requestedAt|date }}</td>
-            <td>
-                <a class="button" href="{{ path('app_meal_book_edit', { id: book.id }) }}">Modifier</a>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="3">Aucune donnée en base</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<h2 class="title is-2">Mes demandes envoyées validées mais pas encore closes</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nom du repas</th>
-            <th>Demande envoyée le</th>
-            <th>Par</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for book in receivedValidated %}
-        <tr>
-            <td>{{ book.meal.title }}</td>
-            <td>{{ book.requestedAt|date }}</td>
-            <td>
-                <a class="button" href="{{ path('app_meal_book_edit', { id: book.id }) }}">Modifier</a>
-            </td>
+            <td>{{ book.validatedAt|date }}</td>
+            <td>{{ book.meal.createdBy }}</td>
+            <td>{{ book.validationComment }}</td>
         </tr>
         {% else %}
         <tr>
             <td colspan="4">
                 <p>Aucune donnée en base</p>
-                <a class="button" href="{{ path('app_book_request_archives') }}">Accéder aux archives</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
+<h2 class="title is-2">Mes demandes envoyées cloturées</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom du repas</th>
+            <th>Demande envoyée le</th>
+            <th>Demande validée le</th>
+            <th>Par</th>
+            <th>Commentaire de validation</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in requestedClosed %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.validatedAt|date }}</td>
+            <td>{{ book.meal.createdBy }}</td>
+            <td>{{ book.validationComment }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">
+                <p>Aucune donnée en base</p>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}

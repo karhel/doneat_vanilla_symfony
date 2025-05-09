@@ -10,6 +10,9 @@ use App\Repository\MealBookRequestRepository;
 #[ORM\Entity(repositoryClass: MealBookRequestRepository::class)]
 class MealBookRequest
 {
+    public const STATUS_PENDING     = 0;
+    public const STATUS_VALIDATED   = 1;
+    public const STATUS_REFUSED     = 2;
     
     #[ORM\Id]
     #[ORM\GeneratedValue]

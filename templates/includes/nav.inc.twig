@@ -26,6 +26,21 @@
 				Mes repas
 			</a>
 
+			
+			<div class="navbar-item has-dropdown is-hoverable">
+				<a class="navbar-link">
+					Mes réservations
+				</a>
+				<div class="navbar-dropdown">
+					<a class="navbar-item" href="{{ path('app_book_request') }}">
+						Gestion des réservations en attente
+					</a>
+					<a class="navbar-item" href="{{ path('app_book_request_archives') }}">
+						Archive des demandes
+					</a>
+				</div>
+			</div>
+
 			{% if is_granted('ROLE_ADMIN') %}
 
 			<div class="navbar-item has-dropdown is-hoverable">
@@ -38,9 +53,6 @@
 					</a>
 					<a class="navbar-item" href="{{ path('app_user') }}">
 						Gestion des utilisateurs
-					</a>
-					<a class="navbar-item" href="{{ path('app_book_request') }}">
-						Gestion des réservations en attente
 					</a>
 				</div>
 			</div>
