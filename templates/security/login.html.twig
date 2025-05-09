@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'content.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
 
-{% block body %}
+{% block content %}
 <section class="section is-flex is-justify-content-center is-align-items-center is-fullheight">
     <div class="container">
         <div class="columns is-centered">
@@ -62,6 +62,9 @@
                         </div>
                     </form>
 
+                    <div class="mt-5 is-fullwidth has-text-centered">
+                        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié</a>
+                    </div>
                 </div>
             </div>
         </div>
