@@ -72,7 +72,7 @@
         <tr>
             <th>Nom du repas</th>
             <th>Demande envoyée le</th>
-            <th>Par</th>
+            <th>Commentaire</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -81,13 +81,14 @@
         <tr>
             <td>{{ book.meal.title }}</td>
             <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.requestComment }}</td>
             <td>
                 <a class="button" href="{{ path('app_meal_book_edit', { id: book.id }) }}">Modifier</a>
             </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="3">Aucune donnée en base</td>
+            <td colspan="4">Aucune donnée en base</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -99,15 +100,16 @@
         <tr>
             <th>Nom du repas</th>
             <th>Demande envoyée le</th>
-            <th>Par</th>
+            <th>Demande validée le</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        {% for book in receivedValidated %}
+        {% for book in requestedValidated %}
         <tr>
             <td>{{ book.meal.title }}</td>
             <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.validatedAt|date }}</td>
             <td>
                 <a class="button" href="{{ path('app_meal_book_edit', { id: book.id }) }}">Modifier</a>
             </td>

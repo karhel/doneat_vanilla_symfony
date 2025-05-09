@@ -59,8 +59,14 @@ class MealRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
 
-        return $qb->andWhere($qb->expr()->isNull('m.bookedBy'))
+        return $qb
+            ->leftJoin('m.bookRequests', 'b')
+            
+            ->andWhere($qb->expr()->isNull('m.bookedBy'))
             //->andWhere('m.createdAt > :last')
+
+            ->andWhere($qb->expr()->isNull('b.id'))
+
             ->orderBy('m.createdAt', 'DESC')
             ->setMaxResults($perPage)
             ->setFirstResult(($page - 1) * $perPage)
@@ -82,7 +88,9 @@ class MealRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('m');
 
         return $qb->select('count(m.id)')
+            ->leftJoin('m.bookRequests', 'b')
             ->andWhere($qb->expr()->isNull('m.bookedBy'))
+            ->andWhere($qb->expr()->isNull('b.id'))
             //->andWhere('m.createdAt > :last')
             //->setParameter('last', new \DateTime('-1 day'))
             ->getQuery()
