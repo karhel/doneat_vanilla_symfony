@@ -11,66 +11,66 @@
         <p>Nous vous conseillons d'utiliser Google Chrome</p>
     </div>
 
-{{ form_errors(mealCreateForm) }}
+{{ form_errors(createForm) }}
 
-{{ form_start(mealCreateForm) }}
+{{ form_start(createForm) }}
 
     <div class="field">
-        {{ form_label(mealCreateForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
+        {{ form_label(createForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
         <div class="control">
-            {{ form_widget(mealCreateForm.title, {'attr': {'class': 'input'}}) }}
+            {{ form_widget(createForm.title, {'attr': {'class': 'input'}}) }}
         </div>
-        {{ form_errors(mealCreateForm.title) }}
+        {{ form_errors(createForm.title) }}
     </div>
 
     <div class="field">
-        {{ form_label(mealCreateForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
+        {{ form_label(createForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
         <div class="control">
-            {{ form_widget(mealCreateForm.description, {'attr': {'class': 'textarea'}}) }}
+            {{ form_widget(createForm.description, {'attr': {'class': 'textarea'}}) }}
         </div>
-        {{ form_errors(mealCreateForm.description) }}
+        {{ form_errors(createForm.description) }}
     </div>
 
     <div class="file is-info has-name">
         <label class="file-label">
-            <input class="file-input" type="file" name="{{ field_name(mealCreateForm.imageFile) }}" />
+            <input class="file-input" type="file" name="{{ field_name(createForm.imageFile) }}" />
             <span class="file-cta">
                 <span class="file-icon">
                     <i class="fas fa-upload"></i>
                 </span>
-                <span class="file-label">{{ field_label(mealCreateForm.imageFile) }}</span>
+                <span class="file-label">{{ field_label(createForm.imageFile) }}</span>
             </span>
             <span class="file-name">...</span>
         </label>
     </div>
 
-<div class="field">
-    {{ form_label(mealCreateForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
-    <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
-    <div class="control">
-        {{ form_widget(mealCreateForm.address, {'attr': {'class': 'input'}}) }}
+    <div class="field" id="address_field">
+        {{ form_label(createForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
+        <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
+        <div class="control">
+            {{ form_widget(createForm.address, {'attr': {'class': 'input'}}) }}
+        </div>
+        {{ form_errors(createForm.address) }}
     </div>
-    {{ form_errors(mealCreateForm.address) }}
-</div>
 
     <div class="field">
-        {{ form_label(mealCreateForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
+        {{ form_label(createForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
         <div class="control select is-multiple is-fullwidth">
-            {{ form_widget(mealCreateForm.tags, {'attr': {'class': ''}}) }}
+            {{ form_widget(createForm.tags, {'attr': {'class': ''}}) }}
         </div>
-        {{ form_errors(mealCreateForm.tags) }}
+        {{ form_errors(createForm.tags) }}
     </div>
 
-    {{ form_widget(mealCreateForm.latitude) }}
-    {{ form_widget(mealCreateForm.longitude) }}
+    {{ form_widget(createForm.latitude) }}
+    {{ form_widget(createForm.longitude) }}
 
     <div class="field is-grouped is-justify-content-center">
         <div class="control">
-            <button type="submit" id="create_meal_form_submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
+            <button type="submit" id="meal_create_form_submit" class="button is-link is-fullwidth">Proposer mon repas !</button>
         </div>
     </div>
 
-{{ form_end(mealCreateForm) }}
+{{ form_end(createForm) }}
                     
 {% endblock %}
 
@@ -80,11 +80,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        const inpLatitude   = document.getElementById('create_meal_form_latitude');
-        const inpLongitude  = document.getElementById('create_meal_form_longitude');
+        const inpLatitude   = document.getElementById('meal_create_form_latitude');
+        const inpLongitude  = document.getElementById('meal_create_form_longitude');
 
-        const btnSubmit     = document.getElementById('create_meal_form_submit');
+        const btnSubmit     = document.getElementById('meal_create_form_submit');
+
         const pWarning      = document.getElementById('geoloc_warning');
+        const dAddress      = document.getElementById('address_field');
 
         //btnSubmit.disabled = true;
         pWarning.hidden = true;
@@ -99,7 +101,7 @@
                         inpLatitude.value = position.coords.latitude;
                         inpLongitude.value = position.coords.longitude;
 
-                        //btnSubmit.disabled = false;
+                        dAddress.hidden = true;
                     }
                 },
 

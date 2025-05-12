@@ -60,9 +60,9 @@ class MealRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('m');
 
         return $qb
-            ->leftJoin('m.bookRequests', 'b')
+            ->leftJoin('m.bookingRequests', 'b')
             
-            ->andWhere($qb->expr()->isNull('m.bookedBy'))
+            //->andWhere($qb->expr()->isNull('m.bookedBy'))
             //->andWhere('m.createdAt > :last')
 
             ->andWhere($qb->expr()->isNull('b.id'))
@@ -88,37 +88,12 @@ class MealRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('m');
 
         return $qb->select('count(m.id)')
-            ->leftJoin('m.bookRequests', 'b')
-            ->andWhere($qb->expr()->isNull('m.bookedBy'))
+            ->leftJoin('m.bookingRequests', 'b')
+            //->andWhere($qb->expr()->isNull('m.bookedBy'))
             ->andWhere($qb->expr()->isNull('b.id'))
             //->andWhere('m.createdAt > :last')
             //->setParameter('last', new \DateTime('-1 day'))
             ->getQuery()
             ->getSingleScalarResult();
     }
-
-    //    /**
-    //     * @return Meal[] Returns an array of Meal objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Meal
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

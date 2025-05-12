@@ -2,47 +2,44 @@
 
 namespace App\Entity;
 
-use App\Types\RequestStatus;
+use App\Repository\BookingRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\MealBookRequestRepository;
 
-#[ORM\Entity(repositoryClass: MealBookRequestRepository::class)]
-class MealBookRequest
+#[ORM\Entity(repositoryClass: BookingRequestRepository::class)]
+class BookingRequest
 {
+    public const STATUS_PENDING     = 0;
+    public const STATUS_VALIDATED   = 1;
+    public const STATUS_REFUSED     = 2;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mealBookRequests')]
+    #[ORM\ManyToOne(inversedBy: 'bookingRequests')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $requestedBy = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $requestedAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?\DateTimeImmutable $validatedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $requestComment = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $validationComment = null;
-
-    #[ORM\Column]
-    private ?bool $isClosed = null;
-
-    #[ORM\ManyToOne(inversedBy: 'bookRequests')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Meal $meal = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $closedAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $status = 0;
+    #[ORM\ManyToOne(inversedBy: 'bookingRequests')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Meal $meal = null;
 
     public function getId(): ?int
     {
@@ -78,7 +75,7 @@ class MealBookRequest
         return $this->validatedAt;
     }
 
-    public function setValidatedAt(?\DateTimeImmutable $validatedAt): static
+    public function setValidatedAt(\DateTimeImmutable $validatedAt): static
     {
         $this->validatedAt = $validatedAt;
 
@@ -102,33 +99,9 @@ class MealBookRequest
         return $this->validationComment;
     }
 
-    public function setValidationComment(?string $validationComment): static
+    public function setValidationComment(string $validationComment): static
     {
         $this->validationComment = $validationComment;
-
-        return $this;
-    }
-
-    public function isClosed(): ?bool
-    {
-        return $this->isClosed;
-    }
-
-    public function setIsClosed(bool $isClosed): static
-    {
-        $this->isClosed = $isClosed;
-
-        return $this;
-    }
-
-    public function getMeal(): ?Meal
-    {
-        return $this->meal;
-    }
-
-    public function setMeal(?Meal $meal): static
-    {
-        $this->meal = $meal;
 
         return $this;
     }
@@ -145,14 +118,14 @@ class MealBookRequest
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getMeal(): ?Meal
     {
-        return $this->status;
+        return $this->meal;
     }
 
-    public function setStatus(?int $status): static
+    public function setMeal(?Meal $meal): static
     {
-        $this->status = $status;
+        $this->meal = $meal;
 
         return $this;
     }

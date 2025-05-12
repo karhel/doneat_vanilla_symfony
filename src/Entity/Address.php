@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Bazinga\GeocoderBundle\Mapping\Annotations as Geocoder;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
+#[Geocoder\Geocodeable()]
 class Address
 {
     #[ORM\Id]
@@ -13,25 +15,31 @@ class Address
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 8)]
+    #[ORM\Column(length: 8, nullable: true)]
     private ?string $postalcode = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 5, nullable: true)]
     private ?string $number = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $road = null;
-
-    #[ORM\Column]
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Geocoder\Address()]
+    private ?string $address = null;
+    
+    #[ORM\Column(nullable: true)]
+    #[Geocoder\Latitude()]
     private ?float $latitude = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
+    #[Geocoder\Longitude()]
     private ?float $longitude = null;
 
     public function getId(): ?int
@@ -119,6 +127,18 @@ class Address
     public function setLongitude(float $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

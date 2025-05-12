@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Bazinga\GeocoderBundle\Mapping\Annotations as Geocoder;
 
 #[ORM\Entity(repositoryClass: MealRepository::class)]
-#[Geocoder\Geocodeable()]
 class Meal
 {
     #[ORM\Id]
@@ -40,37 +39,20 @@ class Meal
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 
-    #[ORM\ManyToOne(inversedBy: 'bookedMeals')]
-    private ?User $bookedBy = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $bookedAt = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $bookedComment = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Geocoder\Address()]
-    private ?string $address = null;
-    
-    #[ORM\Column(nullable: true)]
-    #[Geocoder\Latitude()]
-    private ?float $latitude = null;
-
-    #[ORM\Column(nullable: true)]
-    #[Geocoder\Longitude()]
-    private ?float $longitude = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Address $location = null;
 
     /**
-     * @var Collection<int, MealBookRequest>
+     * @var Collection<int, BookingRequest>
      */
-    #[ORM\OneToMany(targetEntity: MealBookRequest::class, mappedBy: 'meal')]
-    private Collection $bookRequests;
+    #[ORM\OneToMany(targetEntity: BookingRequest::class, mappedBy: 'meal')]
+    private Collection $bookingRequests;
 
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-        $this->bookRequests = new ArrayCollection();
+        $this->bookingRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,102 +144,42 @@ class Meal
         return $this;
     }
 
-    public function getBookedBy(): ?User
+    public function getLocation(): ?Address
     {
-        return $this->bookedBy;
+        return $this->location;
     }
 
-    public function setBookedBy(?User $bookedBy): static
+    public function setLocation(?Address $location): static
     {
-        $this->bookedBy = $bookedBy;
-
-        return $this;
-    }
-
-    public function getBookedAt(): ?\DateTimeImmutable
-    {
-        return $this->bookedAt;
-    }
-
-    public function setBookedAt(?\DateTimeImmutable $bookedAt): static
-    {
-        $this->bookedAt = $bookedAt;
-
-        return $this;
-    }
-
-    public function getBookedComment(): ?string
-    {
-        return $this->bookedComment;
-    }
-
-    public function setBookedComment(?string $bookedComment): static
-    {
-        $this->bookedComment = $bookedComment;
-
-        return $this;
-    }
-
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-
-    public function setLatitude(float $latitude): static
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(float $longitude): static
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?string $address): static
-    {
-        $this->address = $address;
+        $this->location = $location;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, MealBookRequest>
+     * @return Collection<int, BookingRequest>
      */
-    public function getBookRequests(): Collection
+    public function getBookingRequests(): Collection
     {
-        return $this->bookRequests;
+        return $this->bookingRequests;
     }
 
-    public function addBookRequest(MealBookRequest $bookRequest): static
+    public function addBookingRequest(BookingRequest $bookingRequest): static
     {
-        if (!$this->bookRequests->contains($bookRequest)) {
-            $this->bookRequests->add($bookRequest);
-            $bookRequest->setMeal($this);
+        if (!$this->bookingRequests->contains($bookingRequest)) {
+            $this->bookingRequests->add($bookingRequest);
+            $bookingRequest->setMeal($this);
         }
 
         return $this;
     }
 
-    public function removeBookRequest(MealBookRequest $bookRequest): static
+    public function removeBookingRequest(BookingRequest $bookingRequest): static
     {
-        if ($this->bookRequests->removeElement($bookRequest)) {
+        if ($this->bookingRequests->removeElement($bookingRequest)) {
             // set the owning side to null (unless already changed)
-            if ($bookRequest->getMeal() === $this) {
-                $bookRequest->setMeal(null);
+            if ($bookingRequest->getMeal() === $this) {
+                $bookingRequest->setMeal(null);
             }
         }
 

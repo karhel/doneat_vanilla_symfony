@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Address;
 use App\Entity\Meal;
 use App\Entity\User;
 use DateTimeImmutable;
 use App\Form\BookMealForm;
 use App\Form\CreateMealForm;
 use App\Form\DeleteMealForm;
+use App\Form\MealCreateForm;
+use App\Form\MealDeleteForm;
+use App\Form\MealUpdateForm;
 use Psr\Log\LoggerInterface;
 use App\Service\FileUploader;
 use App\Repository\MealRepository;
@@ -21,134 +25,129 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 final class MealController extends AbstractController
 {
-    #[Route('/meal/geoloc', name: 'app_meal_geo_test')]
-    public function geoloc(MealRepository $mealRepository, Request $request): Response
-    {        
-        /** @var User $currentUser */
-        $currentUser = $this->getUser();
-
-        $meals = $mealRepository->findByDistanceFrom(
-            $currentUser->getMainAddress()->getLatitude(), 
-            $currentUser->getMainAddress()->getLongitude(), 
-            10); // Distance de 10 kms
-
-        return $this->render('meal/geoloc.html.twig', [
-            'user' => $currentUser,
-            'meals' => $meals
-        ]);
-    }
-
-    #[Route('/meal', name: 'app_meal')]
+    #[Route('/meal', name: 'app_meal', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('meal/index.html.twig');
     }
 
-    #[Route('/meal/post', name: 'app_meal_create')]
+    #[Route('/meal/create', name: 'app_meal_create', methods: ['GET', 'POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, FileUploader $fileUploader): Response
-    {             
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
+    { 
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
         $meal = new Meal();
-        $meal->setAddress($currentUser->getAddress());
-        
-        $form = $this->createForm(CreateMealForm::class, $meal);
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
 
-            $picture = $form->get('imageFile')->getData();
+        $createForm = $this->createForm(MealCreateForm::class, $meal);
+
+        $createForm->handleRequest($request);
+
+        if($createForm->isSubmitted() && $createForm->isValid())
+        {
+            $picture = $createForm->get('imageFile')->getData();
             if($picture) {
 
                 try {
+
                     $newFilename = $fileUploader->upload($picture); //< Utilisation du service
                     $meal->setPicture($newFilename);
                 }
                 catch(FileException $e) {
+
                     $logger->error($e->getMessage());
                 }
             }
 
-            $meal
-                ->setCreatedAt(new DateTimeImmutable())
-                ->setCreatedBy($currentUser);
+            $location = new Address();
 
-            if(!($meal->getLatitude() && $meal->getLongitude())) {
-                $meal
-                    ->setLatitude($currentUser->getMainAddress()->getLatitude())
-                    ->setLongitude($currentUser->getMainAddress()->getLongitude());
+            $address    = $createForm->get('address')->getData();
+            $latitude   = $createForm->get('latitude')->getData();
+            $longitude  = $createForm->get('longitude')->getData();
+            
+            if($latitude && $longitude) {
+
+                $location
+                    ->setLatitude($latitude)
+                    ->setLongitude($longitude);
             }
+            elseif($address)
+            {
+                $location->setAddress($address);
+            }
+            else
+            {
+                $location = $currentUser->getMainAddress();
+            }
+            
+            $entityManager->persist($location);
+
+            $meal->setLocation($location);
+
+            $meal
+                ->setCreatedBy($currentUser)
+                ->setCreatedAt(new DateTimeImmutable());
 
             $entityManager->persist($meal);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_meal');            
+            $this->addFlash('success', "Votre repas a bien été enregistrée!");
+            return $this->redirectToRoute('app_meal');
         }
-
+        
         return $this->render('meal/create.html.twig', [
-            'mealCreateForm' => $form
+            'createForm' => $createForm
         ]);
     }
 
-    #[Route('meal/edit/{id<\d+>}', name: 'app_meal_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('edit', subject: 'meal', message: "Vous n'avez pas les droits pour modifier ce repas")]
-    public function edit(Meal $meal, FileUploader $fileUploader, Request $request, 
+    #[Route('/meal/{id<\d+>}/update', name: 'app_meal_update', methods: ['GET', 'POST'])]
+    public function update(Meal $meal, FileUploader $fileUploader, Request $request, 
         EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {  
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
-        $editForm = $this->createForm(CreateMealForm::class, $meal);
-        
-        $deleteForm = $this->createForm(DeleteMealForm::class, $meal, [
+        $updateForm = $this->createForm(MealUpdateForm::class, $meal);
+        $deleteForm = $this->createForm(MealDeleteForm::class, $meal, [
             'action'    => $this->generateUrl('app_meal_delete', ['id' => $meal->getId()])
         ]);
 
-        $editForm->handleRequest($request);
-        
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
+        $updateForm->handleRequest($request);
+
+        if($updateForm->isSubmitted() && $updateForm->isValid())
+        {
             try {
 
-                $picture = $editForm->get('imageFile')->getData();
-
+                $picture = $updateForm->get('imageFile')->getData();
                 if($picture) {
 
                     $currentPictureFilename = $meal->getPicture();
 
-                    
-                        // Si une image existe déjà, je la supprime
-                        if($currentPictureFilename) {
-                            $fileUploader->remove($currentPictureFilename);
+                    // Si une image existe déjà, je la supprime
+                    if($currentPictureFilename) {
+                        $fileUploader->remove($currentPictureFilename);
 
-                            $newFilename = $fileUploader->upload($picture); //< Utilisation du service
-                            $meal->setPicture($newFilename);
-                        }
-
-                }  
-                
-
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_meal');    
-                
+                        $newFilename = $fileUploader->upload($picture); //< Utilisation du service
+                        $meal->setPicture($newFilename);
+                    }
+                }
             }
             catch(FileException $e) {
 
                 $logger->error("UPDATE MEAL ERROR" . $e->getMessage());
-            }      
+            } 
+
+            $entityManager->flush();
+            return $this->redirectToRoute('app_meal');
         }
 
-        return $this->render('meal/edit.html.twig', [
-            'mealEditForm'      => $editForm,
-            'mealDeleteForm'    => $deleteForm
+        return $this->render('meal/update.html.twig', [
+            'updateForm'    => $updateForm,
+            'deleteForm'    => $deleteForm
         ]);
     }
 
-    #[Route('/meal/delete/{id<\d+>}', name: 'app_meal_delete', methods: ['POST'])]
-    public function delete(Meal $meal, FileUploader $fileUploader, EntityManagerInterface $entityManager): Response
-    {
+    #[Route('/meal/{id<\d+>}/delete', name: 'app_meal_delete', methods: ['POST'])]
+    public function delete(Meal $meal, FileUploader $fileUploader, Request $request, 
+        EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    {  
         $picture = $meal->getPicture();
         
         // Si une image existe déjà, je la supprime
@@ -159,12 +158,6 @@ final class MealController extends AbstractController
         $entityManager->remove($meal);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_meal'); 
-    }
-
-    #[Route('/meal/picture/stream/{id<\d+>}', name: 'app_meal_picture_stream', methods: ['GET'])]
-    public function getStreamPicture(Meal $meal, FileUploader $fileUploader): Response
-    {
-        return $fileUploader->readStream($meal->getPicture());
+        return $this->redirectToRoute('app_meal');
     }
 }

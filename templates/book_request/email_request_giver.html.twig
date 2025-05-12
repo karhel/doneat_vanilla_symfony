@@ -1,11 +1,10 @@
-<h1>Hi!</h1>
+<h1>Bonjour</h1>
 
-<p>Une demande de réservation pour votre repas {{ meal.title }} a été enregistrée.</p>
-
+<p>Une demande de réservation pour votre repas {{ meal.title }} a été <strong>enregistrée</strong>.</p>
 
 <p>Accédez à cette demande en cliquant sur le lien : <a href="{{ url('app_meal_book_validate', { id: mealRequest.id }) }}">Valider ou refuser cette demande</a></p>
 
 <p>Vous pouvez suivre toutes vos demandes via le lien : <a href="{{ url('app_book_request') }}">Mes demandes en cours</a></p>
 
-
 <p>Cheers!</p>
+<p>L'équipe de Don'Eat!</p>

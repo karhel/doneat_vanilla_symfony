@@ -53,26 +53,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: 'createdBy', orphanRemoval: true)]
     private Collection $createdMeals;
 
-    /**
-     * @var Collection<int, Meal>
-     */
-    #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: 'bookedBy')]
-    private Collection $bookedMeals;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Address $mainAddress = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Geocoder\Address()]
-    private ?string $address = null;
-    
-    #[ORM\Column(nullable: true)]
-    #[Geocoder\Latitude()]
-    private ?float $latitude = null;
-
-    #[ORM\Column(nullable: true)]
-    #[Geocoder\Longitude()]
-    private ?float $longitude = null;
 
     /**
      * @var Collection<int, MealBookRequest>
@@ -80,11 +63,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: MealBookRequest::class, mappedBy: 'requestedBy')]
     private Collection $mealBookRequests;
 
+    /**
+     * @var Collection<int, BookingRequest>
+     */
+    #[ORM\OneToMany(targetEntity: BookingRequest::class, mappedBy: 'requestedBy')]
+    private Collection $bookingRequests;
+
     public function __construct()
     {
         $this->createdMeals = new ArrayCollection();
-        $this->bookedMeals = new ArrayCollection();
         $this->mealBookRequests = new ArrayCollection();
+        $this->bookingRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -226,36 +215,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Meal>
-     */
-    public function getBookedMeals(): Collection
-    {
-        return $this->bookedMeals;
-    }
-
-    public function addBookedMeal(Meal $bookedMeal): static
-    {
-        if (!$this->bookedMeals->contains($bookedMeal)) {
-            $this->bookedMeals->add($bookedMeal);
-            $bookedMeal->setBookedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBookedMeal(Meal $bookedMeal): static
-    {
-        if ($this->bookedMeals->removeElement($bookedMeal)) {
-            // set the owning side to null (unless already changed)
-            if ($bookedMeal->getBookedBy() === $this) {
-                $bookedMeal->setBookedBy(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getMainAddress(): ?Address
     {
         return $this->mainAddress;
@@ -265,40 +224,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->mainAddress = $mainAddress;
 
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?string $address): static
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(?float $longitude): static
-    {
-        $this->longitude = $longitude;
-        return $this;
-    }
-
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-
-    public function setLatitude(?float $latitude): static
-    {
-        $this->latitude = $latitude;
         return $this;
     }
 
@@ -335,5 +260,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->firstname . " " . $this->lastname;
+    }
+
+    /**
+     * @return Collection<int, BookingRequest>
+     */
+    public function getBookingRequests(): Collection
+    {
+        return $this->bookingRequests;
+    }
+
+    public function addBookingRequest(BookingRequest $bookingRequest): static
+    {
+        if (!$this->bookingRequests->contains($bookingRequest)) {
+            $this->bookingRequests->add($bookingRequest);
+            $bookingRequest->setRequestedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBookingRequest(BookingRequest $bookingRequest): static
+    {
+        if ($this->bookingRequests->removeElement($bookingRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($bookingRequest->getRequestedBy() === $this) {
+                $bookingRequest->setRequestedBy(null);
+            }
+        }
+
+        return $this;
     }
 }
