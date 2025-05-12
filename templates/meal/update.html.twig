@@ -11,54 +11,45 @@
                 <div class="box">
                     <h1 class="title is-3 has-text-centered">Modifier un repas déjà en ligne</h1>
 
-                    {{ form_errors(mealEditForm) }}
+                    {{ form_errors(updateForm) }}
 
-                    {{ form_start(mealEditForm) }}
+                    {{ form_start(updateForm) }}
 
                         <div class="field">
-                            {{ form_label(mealEditForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(updateForm.title, "Nom de mon plat", {'label_attr': {'class': 'label'}}) }}
                             <div class="control">
-                                {{ form_widget(mealEditForm.title, {'attr': {'class': 'input'}}) }}
+                                {{ form_widget(updateForm.title, {'attr': {'class': 'input'}}) }}
                             </div>
-                            {{ form_errors(mealEditForm.title) }}
+                            {{ form_errors(updateForm.title) }}
                         </div>
 
                         <div class="field">
-                            {{ form_label(mealEditForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(updateForm.description, "Description, ingrédients, recette...", {'label_attr': {'class': 'label'}}) }}
                             <div class="control">
-                                {{ form_widget(mealEditForm.description, {'attr': {'class': 'textarea'}}) }}
+                                {{ form_widget(updateForm.description, {'attr': {'class': 'textarea'}}) }}
                             </div>
-                            {{ form_errors(mealEditForm.description) }}
+                            {{ form_errors(updateForm.description) }}
                         </div>
 
                         <div class="file is-info has-name">
                             <label class="file-label">
-                                <input class="file-input" type="file" name="{{ field_name(mealEditForm.imageFile) }}" />
+                                <input class="file-input" type="file" name="{{ field_name(updateForm.imageFile) }}" />
                                 <span class="file-cta">
                                     <span class="file-icon">
                                         <i class="fas fa-upload"></i>
                                     </span>
-                                    <span class="file-label">{{ field_label(mealEditForm.imageFile) }}</span>
+                                    <span class="file-label">{{ field_label(updateForm.imageFile) }}</span>
                                 </span>
                                 <span class="file-name">...</span>
                             </label>
                         </div>
 
                         <div class="field">
-                            {{ form_label(mealEditForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
-                            <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
-                            <div class="control">
-                                {{ form_widget(mealEditForm.address, {'attr': {'class': 'input'}}) }}
-                            </div>
-                            {{ form_errors(mealEditForm.address) }}
-                        </div>
-
-                        <div class="field">
-                            {{ form_label(mealEditForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
+                            {{ form_label(updateForm.tags, "Tags/Allergènes", {'label_attr': {'class': 'label'}}) }}
                             <div class="control select is-multiple is-fullwidth">
-                                {{ form_widget(mealEditForm.tags, {'attr': {'class': ''}}) }}
+                                {{ form_widget(updateForm.tags, {'attr': {'class': ''}}) }}
                             </div>
-                            {{ form_errors(mealEditForm.tags) }}
+                            {{ form_errors(updateForm.tags) }}
                         </div>
 
 
@@ -68,10 +59,10 @@
                             </div>
                         </div>
 
-                    {{ form_end(mealEditForm) }}
+                    {{ form_end(updateForm) }}
 
                     
-                    {{ form_start(mealDeleteForm) }}
+                    {{ form_start(deleteForm) }}
 
                         <div class="field is-grouped is-justify-content-center">
                             <div class="control">
@@ -79,7 +70,7 @@
                             </div>
                         </div>
 
-                    {{ form_end(mealDeleteForm) }}
+                    {{ form_end(deleteForm) }}
 
                 </div>
             </div>

@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Address;
 use App\Entity\Meal;
 use App\Entity\MealTag;
-use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class MealUpdateForm extends AbstractType
 {
@@ -18,22 +18,23 @@ class MealUpdateForm extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
+
+            ->add('imageFile', FileType::class, [
+                'label' => "Envoyer une photo",
+                'mapped' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k'
+                    ])
+                ],
+                'required' => false,
             ])
-            ->add('picture')
+
             ->add('tags', EntityType::class, [
                 'class' => MealTag::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
-            ])
-            ->add('createdBy', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-            ->add('location', EntityType::class, [
-                'class' => Address::class,
-                'choice_label' => 'id',
+                'required' => false
             ])
         ;
     }
