@@ -25,13 +25,13 @@ class BookingRequest
     #[ORM\Column]
     private ?\DateTimeImmutable $requestedAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $validatedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $requestComment = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $validationComment = null;
 
     #[ORM\Column(nullable: true)]
@@ -40,6 +40,9 @@ class BookingRequest
     #[ORM\ManyToOne(inversedBy: 'bookingRequests')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Meal $meal = null;
+
+    #[ORM\Column]
+    private ?int $status = null;
 
     public function getId(): ?int
     {
@@ -126,6 +129,18 @@ class BookingRequest
     public function setMeal(?Meal $meal): static
     {
         $this->meal = $meal;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

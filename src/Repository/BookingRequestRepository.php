@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\BookingRequest;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<BookingRequest>
@@ -16,28 +17,56 @@ class BookingRequestRepository extends ServiceEntityRepository
         parent::__construct($registry, BookingRequest::class);
     }
 
-    //    /**
-    //     * @return BookingRequest[] Returns an array of BookingRequest objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Retourne la liste des demandes suivant le statut indiqué (en attente, validée, refusée) 
+     * et ayant été émise par l'utilisateur indiqué
+     * 
+     * @param User $user Utilisateur ayant créé la demande de réservation (envoyé la demande)
+     * @param int $status Statut de la demande (à partir de l'enum de la classe MealBookRequest)
+     * 
+     * @return array Liste des demandes suivant le statut et le demandeur
+     */
+    public function findByStatusAndRequestedBy(User $user, int $status, bool $withClosed = false): array
+    {
+        $query = $this->createQueryBuilder('b')
+            ->andWhere('b.requestedBy = :user')
+            ->andWhere('b.status = :status');
 
-    //    public function findOneBySomeField($value): ?BookingRequest
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if(!$withClosed) {
+            $query->andWhere($query->expr()->isNull('b.closedAt'));
+        }
+        
+        $query
+            ->setParameter('user', $user)
+            ->setParameter('status', $status);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Retourne la liste des demandes suivant le statut indiqué (en attente, validée, refusée)
+     * et étant en lien avec un repas posté par l'utilisateur indiqué
+     * 
+     * @param User $user Utilisateur ayant posté le repas dont la demande fait l'objet
+     * @param int $status Statut de la demande (à partir de l'num de la classe MealBookRequest)
+     * 
+     * @return array Liste des demandes suivant le statut et l'utilisateur ayant posté le repas
+     */
+    public function findByStatusAndMealCreatedBy(User $user, int $status, bool $withClosed = false): array
+    {
+        $query = $this->createQueryBuilder('b')
+            ->innerJoin('b.meal', 'm')
+            ->andWhere('m.createdBy = :user')
+            ->andWhere('b.status = :status');
+        
+        if(!$withClosed) {
+            $query->andWhere($query->expr()->isNull('b.closedAt'));
+        }
+
+        $query
+            ->setParameter('user', $user)
+            ->setParameter('status', $status);
+
+        return $query->getQuery()->getResult();
+    }
 }

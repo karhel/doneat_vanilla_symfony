@@ -25,14 +25,18 @@
 			<a class="navbar-item" href="{{ path('app_meal') }}">
 				Mes repas
 			</a>
-
 			
 			<div class="navbar-item has-dropdown is-hoverable">
 				<a class="navbar-link">
 					Mes réservations
 				</a>
 				<div class="navbar-dropdown">
-				
+					<a class="navbar-item" href="{{ path('app_booking_request') }}">
+						Gestion des réservations en attente
+					</a>
+					<a class="navbar-item" href="{{ path('app_booking_archives') }}">
+						Archive des demandes
+					</a>
 				</div>
 			</div>
 

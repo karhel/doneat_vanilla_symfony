@@ -1,0 +1,40 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Réserver un repas{% endblock %}
+
+{% block content %}
+
+<h1 class="title is-3 has-text-centered">Envoyer une demande de réservation du repas</h1>
+
+<div class="notification is-warning">
+    <p>La réservation du repas n'est effective qu'une fois qu'elle sera acceptée.</p>
+    <p>Vous aurez alors accès aux informations nécessaires pour aller récupérer votre assiette</p>
+</div>
+
+<div class="mb-5">
+<h2 class="title is-3 has-text-centered">Repas sélectionné</h2>
+{{ component('MealCard', { meal: meal, actions: false }) }}
+</div>
+
+{{ form_errors(createForm) }}
+
+{{ form_start(createForm) }}
+
+    <div class="field">
+        {{ form_label(createForm.requestComment, "Commentaire, informations importantes...", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(createForm.requestComment, {'attr': {'class': 'textarea'}}) }}
+        </div>
+        {{ form_errors(createForm.requestComment) }}
+    </div>
+    
+
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" class="button is-link is-fullwidth">Envoyer ma demande de réservation !</button>
+        </div>
+    </div>
+
+{{ form_end(createForm) }}
+
+{% endblock %}

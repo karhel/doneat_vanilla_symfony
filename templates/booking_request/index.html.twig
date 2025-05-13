@@ -1,0 +1,70 @@
+{% extends 'content.html.twig' %}
+
+{% block title %}Mes demandes en attente{% endblock %}
+
+{% block content %}
+
+
+<h2 class="title is-2">Mes demandes reçues en cours</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom du repas</th>
+            <th>Demande envoyée le</th>
+            <th>Par</th>
+            <th>Commentaire</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in pendingApproval %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.requestedBy }}</td>
+            <td>{{ book.requestComment }}</td>
+            <td>
+                <a class="button" href="{{ path('app_booking_validate', { id: book.id }) }}">Accepter ou refuser</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">Aucune donnée en base</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h2 class="title is-2">Mes demandes envoyées en cours</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom du repas</th>
+            <th>Demande envoyée le</th>
+            <th>Commentaire</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in pendingRequests %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.requestComment }}</td>
+            <td>
+                <a class="button" href="{{ path('app_booking_update', { id: book.id }) }}">Modifier</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">Aucune donnée en base</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+{% endblock %}

@@ -14,27 +14,7 @@ class BookingRequestDeleteForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('requestedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('validatedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('requestComment')
-            ->add('validationComment')
-            ->add('closedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('requestedBy', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-            ->add('meal', EntityType::class, [
-                'class' => Meal::class,
-                'choice_label' => 'id',
-            ])
-        ;
+        $builder;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

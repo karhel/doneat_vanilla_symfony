@@ -2,38 +2,30 @@
 
 namespace App\Form;
 
-use App\Entity\BookingRequest;
 use App\Entity\Meal;
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\BookingRequest;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class BookingRequestValidateForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('requestedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('validatedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('requestComment')
             ->add('validationComment')
-            ->add('closedAt', null, [
-                'widget' => 'single_text',
+
+            ->add('refuse', SubmitType::class, [
+                'label' => "Refuser la réservation"
             ])
-            ->add('requestedBy', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
+            
+            ->add('validate', SubmitType::class, [
+                'label' => "Confirmer la réservation"
             ])
-            ->add('meal', EntityType::class, [
-                'class' => Meal::class,
-                'choice_label' => 'id',
-            ])
+
         ;
     }
 
