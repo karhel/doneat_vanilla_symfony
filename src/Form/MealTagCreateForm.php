@@ -17,11 +17,6 @@ class MealTagCreateForm extends AbstractType
             ->add('name')
             ->add('isAllergen')
             ->add('icon')
-            ->add('meals', EntityType::class, [
-                'class' => Meal::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
         ;
     }
 
