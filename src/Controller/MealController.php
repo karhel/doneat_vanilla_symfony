@@ -35,9 +35,9 @@ final class MealController extends AbstractController
         
         $location = $currentUser->getMainAddress();
             
-        if(!$location) {
+        if(!$location || !$location->getLatitude() || !$location->getLongitude()) {
 
-            $this->addFlash('error', "Nous n'avons pas pu récupérer votre géolocalisation et vous n'avez pas renseigné d'adresse dans votre profil. Au moins l'une des deux informations est nécessaire pour vous localiser");
+            $this->addFlash('error', "Nous n'avons pas pu récupérer votre géolocalisation et vous n'avez pas renseigné d'adresse vailde dans votre profil.");
             return $this->redirectToRoute('app_profile');
         }
 
