@@ -9,10 +9,13 @@
 
     <div class="buttons">
         <a href="{{ path('app_meal_create') }}" class="button is-primary">Proposer un repas</a>
-        <button class="button is-link">....</button>
+        <a href="{{ path('app_meal') }}" class="button is-link">Tous</a>
+        <a href="{{ path('app_meal', { distance: 15 }) }}" class="button is-link">15 km</a>
+        <a href="{{ path('app_meal', { distance: 30 }) }}" class="button is-link">30 km</a>
+        <a href="{{ path('app_meal', { distance: 50 }) }}" class="button is-link">50 km</a>
     </div>
 
-    {{ component('MealInfinitGrid') }}
+    {{ component('MealInfinitGrid', { distance: distance, latitude: location.latitude, longitude: location.longitude }) }}
 
 </div>
 {% endblock %}

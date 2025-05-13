@@ -26,9 +26,25 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 final class MealController extends AbstractController
 {
     #[Route('/meal', name: 'app_meal', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request, MealRepository $mealRepository): Response
     {
-        return $this->render('meal/index.html.twig');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        
+        $location = $currentUser->getMainAddress();
+            
+        if(!$location) {
+
+            $this->addFlash('error', "Nous n'avons pas pu récupérer votre géolocalisation et vous n'avez pas renseigné d'adresse dans votre profil. Au moins l'une des deux informations est nécessaire pour vous localiser");
+            return $this->redirectToRoute('app_profile');
+        }
+
+        return $this->render('meal/index.html.twig', [
+            'distance'  => $request->query->get('distance', 0),
+            'location'  => $location
+        ]);
     }
 
     #[Route('/meal/create', name: 'app_meal_create', methods: ['GET', 'POST'])]

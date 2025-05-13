@@ -20,6 +20,11 @@ final class MealInfinitGrid
     #[LiveProp]
     public int $page = 1;
 
+    public int $distance = 0;
+    
+    public float $latitude = .0;
+    public float $longitude = .0;
+
     public function __construct(
         private MealRepository $mealRepository
     )
@@ -35,11 +40,21 @@ final class MealInfinitGrid
 
     public function hasMore(): bool
     {
+        if($this->distance >= 0) {
+
+            return $this->mealRepository->countAvailable($this->distance, $this->latitude, $this->longitude) > ($this->page * self::PER_PAGE);
+        }
+
         return $this->mealRepository->countAvailable() > ($this->page * self::PER_PAGE);
     }
 
     public function getItems(): array
     {
+        if($this->distance >= 0) {
+            
+            return $this->mealRepository->paginateAvailable($this->page, self::PER_PAGE, $this->distance, $this->latitude, $this->longitude);
+        }
+
         return $this->mealRepository->paginateAvailable($this->page, self::PER_PAGE);
     }
 }
