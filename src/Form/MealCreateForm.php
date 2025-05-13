@@ -42,16 +42,6 @@ class MealCreateForm extends AbstractType
                 'required' => false
             ])
             
-            ->add('address', TextType::class, [
-                'mapped'    => false,
-                'required'  => false,
-                'constraints' => [
-                    new GeocoderAddress([
-                        'message' => "L'adresse saisie n'est pas reconnue",
-                    ]),
-                ]
-            ])
-            
             ->add('latitude',   HiddenType::class, ['mapped' => false])
             ->add('longitude',  HiddenType::class, ['mapped' => false])
         ;

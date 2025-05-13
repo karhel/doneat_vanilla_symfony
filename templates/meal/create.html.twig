@@ -6,8 +6,9 @@
 
 <h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
     
-    <div class="notification is-warning" id="geoloc_warning">
-        <p>Les services de géolocalisation ne sont pas disponibles sur votre navigateur. L'adresse définie dans votre profil sera utilisée pour localiser le repas.</p>
+    <div class="notification is-warning has-text-centered" id="geoloc_warning">
+        <p>Les services de géolocalisation ne sont pas disponibles sur votre navigateur.</p>
+        <p><strong>L'adresse définie dans votre profil sera utilisée pour localiser le repas. Vous pouvez la modifier en <a href="{{ path('app_profile') }}">cliquant ici</a></strong></p>
         <p>Nous vous conseillons d'utiliser Google Chrome</p>
     </div>
 
@@ -42,15 +43,6 @@
             </span>
             <span class="file-name">...</span>
         </label>
-    </div>
-
-    <div class="field" id="address_field">
-        {{ form_label(createForm.address, "Adresse (par défaut l'adresse définie dans votre profil)", {'label_attr': {'class': 'label'}}) }}
-        <p>Elle ne sera rendue visible qu'une fois la réservation validée</p>
-        <div class="control">
-            {{ form_widget(createForm.address, {'attr': {'class': 'input'}}) }}
-        </div>
-        {{ form_errors(createForm.address) }}
     </div>
 
     <div class="field">

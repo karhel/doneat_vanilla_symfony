@@ -4,16 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Address;
-use App\Form\DeleteUserForm;
-use App\Form\UpdateUserForm;
 use App\Form\UserUpdateForm;
 use App\Form\UserAddressForm;
 use App\Form\UserPasswordForm;
-use App\Form\UpdateUserRolesForm;
 use App\Service\GeocodingService;
 use App\Repository\UserRepository;
-use App\Form\UpdateUserAddressForm;
-use App\Form\UpdateUserPasswordForm;
 use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,17 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserController extends AbstractController
-{
-    #[Route('/admin/user', name: 'app_user')]
-    public function index(UserRepository $userRepository): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
-        return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);
-    }
-    
+{    
     #[Route('/profile', name: 'app_profile')]
     public function profile(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, GeocodingService $geocodingService): Response
     {
@@ -107,4 +92,15 @@ final class UserController extends AbstractController
         ]);
     }
 
+    // ==============================   ADMINISTRATION ROUTES    =================================================
+
+    #[Route('/admin/user', name: 'app_user')]
+    public function index(UserRepository $userRepository): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        return $this->render('user/index.html.twig', [
+            'users' => $userRepository->findAll(),
+        ]);
+    }
 }

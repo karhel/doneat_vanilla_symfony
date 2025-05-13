@@ -22,9 +22,10 @@
         <td>{{ user.firstname }}</td>
         <td>{{ user.email }}</td>
         <td>
-            
+            {#
             <a href="{{ path('app_user_delete', {'id': user.id}) }}" class="button is-danger">Supprimer</a>
             <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="button is-warning">Modifier</a>
+            #}
         </td>
     </tr>
     {% else %}

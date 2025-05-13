@@ -61,7 +61,6 @@ final class MealController extends AbstractController
 
             $location = new Address();
 
-            $address    = $createForm->get('address')->getData();
             $latitude   = $createForm->get('latitude')->getData();
             $longitude  = $createForm->get('longitude')->getData();
             
@@ -70,10 +69,6 @@ final class MealController extends AbstractController
                 $location
                     ->setLatitude($latitude)
                     ->setLongitude($longitude);
-            }
-            elseif($address)
-            {
-                $location->setAddress($address);
             }
             else
             {
