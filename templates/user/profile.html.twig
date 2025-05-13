@@ -7,152 +7,105 @@
 <h1 class="title is-3 has-text-centered">Modifier mon compte utilisateur</h1>
 
  <div class="box">
-    <h2 class="title is-4 has-text-centered">Mes infos</h2>
-    {{ form_errors(updateUserInfo) }}
+    <h2 class="title is-4 has-text-centered">Mes informations</h2>
 
-    {{ form_start(updateUserInfo) }}
+    {{ form_errors(updateForm) }}
 
-        
-        <div class="field">
-            {{ form_label(updateUserInfo.email, "Adresse email", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserInfo.email, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserInfo.email) }}
-        </div>
-        
-        <div class="field">
-            {{ form_label(updateUserInfo.lastname, "Nom de famille", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserInfo.lastname, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserInfo.lastname) }}
-        </div>
+    {{ form_start(updateForm) }}
 
-        <div class="field">
-            {{ form_label(updateUserInfo.firstname, "Prénom", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserInfo.firstname, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserInfo.firstname) }}
+    <div class="field">
+        {{ form_label(updateForm.email, "Adresse email", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(updateForm.email, {'attr': {'class': 'input'}}) }}
         </div>
-
-        <div class="field">
-            {{ form_label(updateUserInfo.address, "Adresse postale", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserInfo.address, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserInfo.address) }}
-        </div>
-
-        <div>
-            <p>Latitude: {{ user.latitude }}</p>
-            <p>Longitude: {{ user.longitude }}</p>
-        </div>
+        {{ form_errors(updateForm.email) }}
+    </div>
     
-        <div class="field is-grouped is-justify-content-center">
-            <div class="control">
-                <button type="submit" class="button is-link is-fullwidth">Enregistrer</button>
-            </div>
+    <div class="field">
+        {{ form_label(updateForm.lastname, "Nom de famille", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(updateForm.lastname, {'attr': {'class': 'input'}}) }}
         </div>
+        {{ form_errors(updateForm.lastname) }}
+    </div>
 
-    {{ form_end(updateUserInfo) }}
+    <div class="field">
+        {{ form_label(updateForm.firstname, "Prénom", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(updateForm.firstname, {'attr': {'class': 'input'}}) }}
+        </div>
+        {{ form_errors(updateForm.firstname) }}
+    </div>
+
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" class="button is-link is-fullwidth">Enregistrer</button>
+        </div>
+    </div>
+    
+    {{ form_end(updateForm) }}
+</div>
+    
+ <div class="box">
+    <h2 class="title is-4 has-text-centered">Modifier mon adresse</h2>
+    {{ form_errors(addresForm) }}
+
+    {{ form_start(addresForm) }}
+    
+    <div class="field">
+        {{ form_label(addresForm.address, "Adresse complète (rue, code postal, ville)", {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(addresForm.address, {'attr': {'class': 'input'}}) }}
+        </div>
+        {{ form_errors(addresForm.address) }}
+    </div>
+
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" class="button is-link is-fullwidth">Modifier</button>
+        </div>
+    </div>
+
+    {{ form_end(addresForm) }}
 </div>
     
  <div class="box">
     <h2 class="title is-4 has-text-centered">Modifier mon mot de passe</h2>
-    {{ form_errors(updateUserPassword) }}
+    {{ form_errors(passwdForm) }}
 
-    {{ form_start(updateUserPassword) }}
-        
-        <div class="field">
-            {{ form_label(updateUserPassword.currentPassword, 'Mot de passe actuel', {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserPassword.currentPassword, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserPassword.currentPassword) }}
-        </div>        
+    {{ form_start(passwdForm) }}
 
-        <div class="field">
-            {{ form_label(updateUserPassword.plainPassword.first, 'Nouveau mot de passe', {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserPassword.plainPassword.first, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserPassword.plainPassword.first) }}
+    <div class="field">
+        {{ form_label(passwdForm.currentPassword, 'Mot de passe actuel', {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(passwdForm.currentPassword, {'attr': {'class': 'input'}}) }}
         </div>
+        {{ form_errors(passwdForm.currentPassword) }}
+    </div>        
 
-        <div class="field">
-            {{ form_label(updateUserPassword.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserPassword.plainPassword.second, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserPassword.plainPassword.second) }}
+    <div class="field">
+        {{ form_label(passwdForm.plainPassword.first, 'Nouveau mot de passe', {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(passwdForm.plainPassword.first, {'attr': {'class': 'input'}}) }}
         </div>
-    
-        <div class="field is-grouped is-justify-content-center">
-            <div class="control">
-                <button type="submit" class="button is-link is-fullwidth">Modifier</button>
-            </div>
-        </div>
-    
-    {{ form_end(updateUserPassword) }}
-</div>
+        {{ form_errors(passwdForm.plainPassword.first) }}
+    </div>
 
-<div class="box">
-    <h2 class="title is-4 has-text-centered">Modifier mon adresse principale</h2>
-    {{ form_errors(updateUserAddress) }}
-
-    {{ form_start(updateUserAddress) }}
-
-        
-
-        <div class="field">
-            {{ form_label(updateUserAddress.number, "Numéro", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserAddress.number, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserAddress.number) }}
+    <div class="field">
+        {{ form_label(passwdForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'label'}}) }}
+        <div class="control">
+            {{ form_widget(passwdForm.plainPassword.second, {'attr': {'class': 'input'}}) }}
         </div>
-        
-        <div class="field">
-            {{ form_label(updateUserAddress.road, "Nom de la rue", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserAddress.road, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserAddress.road) }}
-        </div>
-        <div class="field">
-            {{ form_label(updateUserAddress.postalcode, "Code postal", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserAddress.postalcode, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserAddress.postalcode) }}
-        </div>
+        {{ form_errors(passwdForm.plainPassword.second) }}
+    </div>
 
-        <div class="field">
-            {{ form_label(updateUserAddress.city, "Ville", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserAddress.city, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserAddress.city) }}
+    <div class="field is-grouped is-justify-content-center">
+        <div class="control">
+            <button type="submit" class="button is-link is-fullwidth">Modifier</button>
         </div>
-        
-        <div class="field">
-            {{ form_label(updateUserAddress.country, "Pays", {'label_attr': {'class': 'label'}}) }}
-            <div class="control">
-                {{ form_widget(updateUserAddress.country, {'attr': {'class': 'input'}}) }}
-            </div>
-            {{ form_errors(updateUserAddress.country) }}
-        </div>
-        
+    </div>
 
-        <div class="field is-grouped is-justify-content-center">
-            <div class="control">
-                <button type="submit" class="button is-link is-fullwidth">Modifier</button>
-            </div>
-        </div>
-
-    {{ form_end(updateUserAddress) }}
+    {{ form_end(passwdForm) }}
 </div>
 
 {% endblock %}

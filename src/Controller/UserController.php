@@ -6,6 +6,9 @@ use App\Entity\User;
 use App\Entity\Address;
 use App\Form\DeleteUserForm;
 use App\Form\UpdateUserForm;
+use App\Form\UserUpdateForm;
+use App\Form\UserAddressForm;
+use App\Form\UserPasswordForm;
 use App\Form\UpdateUserRolesForm;
 use App\Service\GeocodingService;
 use App\Repository\UserRepository;
@@ -36,129 +39,72 @@ final class UserController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $mainAddress = $currentUser->getMainAddress() ?: new Address();
 
-        $editForm = $this->createForm(UpdateUserForm::class, $user);
-        $pwdForm = $this->createForm(UpdateUserPasswordForm::class, $user);
-        $addrForm = $this->createForm(UpdateUserAddressForm::class, $user->getMainAddress());
+        $updateForm  = $this->createForm(UserUpdateForm::class, $currentUser);
+        $passwdForm  = $this->createForm(UserPasswordForm::class, $currentUser);
+        $addresForm  = $this->createForm(UserAddressForm::class, $mainAddress);
 
-        $editForm->handleRequest($request);
-        $pwdForm->handleRequest($request);
-        $addrForm->handleRequest($request);
+        $updateForm->handleRequest($request);
+        $passwdForm->handleRequest($request);
+        $addresForm->handleRequest($request);
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
+        if ($updateForm->isSubmitted() && $updateForm->isValid()) {
 
-            $entityManager->flush();            
+            $entityManager->flush();
+
             $this->addFlash('success', "Vos informations ont été mises à jour");
 
             return $this->redirectToRoute('app_profile');
-        }
-        else if ($pwdForm->isSubmitted() && $pwdForm->isValid()) {
 
-            $currentPassword    = $pwdForm->get('currentPassword')->getData();
-            $newPassword        = $pwdForm->get('plainPassword')->getData();
 
-            if($userPasswordHasher->isPasswordValid($user, $currentPassword)) {
-                
+        } elseif ($addresForm->isSubmitted() && $addresForm->isValid()) {
+
+            if(!$mainAddress->getId()) { 
+
+                $entityManager->persist($mainAddress); 
+
+                $currentUser->setMainAddress($mainAddress);
+            }
+
+            $entityManager->flush();
+
+            $this->addFlash('success', "Votre adresse a été enregistrée");
+
+            return $this->redirectToRoute('app_profile');
+
+        } elseif ($passwdForm->isSubmitted() && $passwdForm->isValid()) {
+
+            $currentPassword    = $passwdForm->get('currentPassword')->getData();
+            $newPassword        = $passwdForm->get('plainPassword')->getData();
+
+            if($userPasswordHasher->isPasswordValid($currentUser, $currentPassword)) {
+
                 // encode the plain password
-                $user->setPassword($userPasswordHasher->hashPassword($user, $newPassword));
+                $currentUser->setPassword($userPasswordHasher->hashPassword($currentUser, $newPassword));
                 $entityManager->flush();
 
                 $this->addFlash('success', "Votre mot de passe a été mis à jour");
 
                 return $this->redirectToRoute('app_profile');
-            }
-            else {
+
+            } else {
 
                 // Le mot de passe actuel n'est pas le bon
                 $error = new FormError("Le mot de passe saisi ne correspond pas à votre mot de passe actuel");
-                $pwdForm->addError($error);
-            }
-        }
-        else if ($addrForm->isSubmitted() && $addrForm->isValid()) {
-
-            $oldAddress = $user->getMainAddress();
-            if($oldAddress) {
-                $entityManager->remove($oldAddress);
+                $passwdForm->addError($error);
             }
 
-            $objAddress = $addrForm->getData();
-
-            $strFullAddress = printf("%s, %s %s %s, %s", $objAddress->getNumber(), $objAddress->getRoad(), $objAddress->getPostalCode(), $objAddress->getCity(), $objAddress->getCountry());
-            $location = $geocodingService->geocodeAddress($strFullAddress);
-
-            $objAddress->setLatitude($location['latitude'])->setLongitude($location['longitude']);
-
-            $user->setMainAddress($objAddress);
-
-            $entityManager->persist($objAddress);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_profile');
         }
 
         return $this->render('user/profile.html.twig', [
-            'user'                  => $user,
-            'updateUserInfo'        => $editForm,
-            'updateUserPassword'    => $pwdForm,
-            'updateUserAddress'     => $addrForm
+            'user'          => $currentUser,
+            'updateForm'    => $updateForm,
+            'passwdForm'    => $passwdForm,
+            'addresForm'    => $addresForm
         ]);
     }
 
-    #[Route('/admin/user/edit/{id<\d+>}', name: 'app_user_edit')]
-    public function edit(User $user, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
-        $editForm   = $this->createForm(UpdateUserForm::class, $user);
-        $rolesForm  = $this->createForm(UpdateUserRolesForm::class, $user);
-
-        $editForm->handleRequest($request);
-        $rolesForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-
-            $entityManager->flush();            
-            $this->addFlash('success', "Les informations ont été mises à jour");
-
-            return $this->redirectToRoute('app_user');
-        }
-        elseif($rolesForm->isSubmitted() && $rolesForm->isValid()) {
-
-
-            $entityManager->flush();
-
-            $this->addFlash('success', "Les rôles ont été mises à jour");
-            return $this->redirectToRoute('app_user');
-        }
-
-        return $this->render('user/edit.html.twig', [
-            'user'              => $user,
-            'updateUserInfo'    => $editForm,
-            'updateUserRoles'   => $rolesForm
-        ]);
-    }
-
-    #[Route('/admin/user/delete/{id<\d+>}', name: 'app_user_delete')]
-    public function delete(User $user, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
-        $deleteForm = $this->createForm(DeleteUserForm::class, $user);
-        $deleteForm->handleRequest($request);
-
-        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-
-            $entityManager->remove($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user');
-        }
-
-        return $this->render('user/delete.html.twig', [
-            'user'  => $user,
-            'userDeleteForm' => $deleteForm
-        ]);
-    }
 }
