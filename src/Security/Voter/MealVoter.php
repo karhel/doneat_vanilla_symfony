@@ -10,20 +10,21 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class MealVoter extends Voter
 {
-    public const EDIT = 'edit';
-    public const VIEW = 'view';
-    public const BOOK = 'book';
+    public const EDIT       = 'edit';
+    public const BOOK       = 'book';
+    public const VIEW       = 'view';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW, self::BOOK])
+        return in_array($attribute, [self::EDIT, self::BOOK])
             && $subject instanceof \App\Entity\Meal;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
+        /** @var Meal $subject **/
+        /** @var User $user **/
+
         $user = $token->getUser();
 
         // if the user is anonymous, do not grant access
@@ -34,17 +35,10 @@ final class MealVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                /** @var Meal $subject **/
-                /** @var User $user **/
                 return ($subject->getCreatedBy() === $user);
 
-            case self::VIEW:
-                return true;
-
             case self::BOOK:
-                /** @var Meal $subject **/
-                /** @var User $user **/
-                return ($subject->getCreatedBy() !== $user);
+                return ($subject->getCreatedBy() !== $user && $subject->getBookingRequests()->count() <= 0);
         }
 
         return false;

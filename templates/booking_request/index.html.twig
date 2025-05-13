@@ -36,7 +36,9 @@
             <td>{{ book.validationComment }}</td>
 
             <td>
+                {% if is_granted('close', book) %}
                 <a class="button" href="{{ path('app_booking_close_giver', { id: book.id }) }}">Cloturer</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -54,7 +56,9 @@
             <td>{{ book.validationComment }}</td>
 
             <td>
+                {% if is_granted('close', book) %}
                 <a class="button" href="{{ path('app_booking_close_eater', { id: book.id }) }}">Cloturer</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -81,7 +85,9 @@
             <td>{{ book.requestedBy }}</td>
             <td>{{ book.requestComment }}</td>
             <td>
+                {% if is_granted('validate', book) %}
                 <a class="button" href="{{ path('app_booking_validate', { id: book.id }) }}">Accepter ou refuser</a>
+                {% endif %}
             </td>
         </tr>
         {% else %}
@@ -110,7 +116,9 @@
             <td>{{ book.requestedAt|date }}</td>
             <td>{{ book.requestComment }}</td>
             <td>
+                {% if is_granted('edit', book) %}
                 <a class="button" href="{{ path('app_booking_update', { id: book.id }) }}">Modifier</a>
+                {% endif %}
             </td>
         </tr>
         {% else %}

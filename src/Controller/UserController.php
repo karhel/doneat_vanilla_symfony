@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -95,6 +96,7 @@ final class UserController extends AbstractController
     // ==============================   ADMINISTRATION ROUTES    =================================================
 
     #[Route('/admin/user', name: 'app_user')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');

@@ -34,6 +34,8 @@ final class MealController extends AbstractController
     #[Route('/meal/create', name: 'app_meal_create', methods: ['GET', 'POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, FileUploader $fileUploader): Response
     { 
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
@@ -86,6 +88,7 @@ final class MealController extends AbstractController
     }
 
     #[Route('/meal/{id<\d+>}/update', name: 'app_meal_update', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'meal')]
     public function update(Meal $meal, FileUploader $fileUploader, Request $request, 
         EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {  
@@ -130,6 +133,7 @@ final class MealController extends AbstractController
     }
 
     #[Route('/meal/{id<\d+>}/delete', name: 'app_meal_delete', methods: ['POST'])]
+    #[IsGranted('edit', 'meal')]
     public function delete(Meal $meal, FileUploader $fileUploader, Request $request, 
         EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {  

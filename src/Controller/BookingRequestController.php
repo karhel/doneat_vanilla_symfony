@@ -2,25 +2,28 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\BookingRequest;
+use App\Repository\MealRepository;
 use App\Form\BookingRequestCreateForm;
 use App\Form\BookingRequestDeleteForm;
 use App\Form\BookingRequestUpdateForm;
 use App\Form\BookingRequestValidateForm;
-use App\Repository\BookingRequestRepository;
-use App\Repository\MealRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\BookingRequestRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class BookingRequestController extends AbstractController
 {
     #[Route('/booking/request', name: 'app_booking_request', methods: ['GET'])]
     public function index(BookingRequestRepository $bookingRepository): Response
-    {        
+    {                
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         return $this->render('booking_request/index.html.twig', [
 
             'pendingRequests'   => $bookingRepository->findByStatusAndRequestedBy($this->getUser(), BookingRequest::STATUS_PENDING),
@@ -35,7 +38,9 @@ final class BookingRequestController extends AbstractController
 
     #[Route('/booking/archives', name: 'app_booking_archives', methods: ['GET'])]
     public function archives(BookingRequestRepository $bookingRepository): Response
-    {
+    {        
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         return $this->render('booking_request/archives.html.twig', [
             
             'refusedByMe'       => $bookingRepository->findByStatusAndMealCreatedBy($this->getUser(), BookingRequest::STATUS_REFUSED, true),
@@ -49,7 +54,11 @@ final class BookingRequestController extends AbstractController
     #[Route('/booking/request/create', name: 'app_booking_create', methods: ['GET', 'POST'])]
     public function create(Request $request, MealRepository $mealRepository, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+        
         $meal = $mealRepository->findOneById($request->query->get('meal_id'));
+        $this->denyAccessUnlessGranted('book', $meal);
+
         if(!$meal) {
 
             $this->addFlash('error', "Le repas que vous souhaitez réserver n'est pas disponible");
@@ -88,8 +97,11 @@ final class BookingRequestController extends AbstractController
     }
 
     #[Route('/booking/request/{id<\d+>}/update', name: 'app_booking_update', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'bookingRequest')]
     public function update(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $updateForm = $this->createForm(BookingRequestUpdateForm::class, $bookingRequest);
 
         $deleteForm = $this->createForm(BookingRequestDeleteForm::class, $bookingRequest, [
@@ -117,8 +129,11 @@ final class BookingRequestController extends AbstractController
     }
 
     #[Route('/booking/request/{id<\d+>}/validate', name: 'app_booking_validate')]
+    #[IsGranted('validate', 'bookingRequest')]
     public function validate(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $validateForm = $this->createForm(BookingRequestValidateForm::class, $bookingRequest);
         $validateForm->handleRequest($request);
 
@@ -164,8 +179,11 @@ final class BookingRequestController extends AbstractController
     }
 
     #[Route('/booking/request/{id<\d+>}/close/eater', name: 'app_booking_close_eater')]
+    #[IsGranted('close', 'bookingRequest')]
     public function closeByEater(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $bookingRequest->setClosedByEaterAt(new DateTimeImmutable());
         $entityManager->flush();
 
@@ -179,8 +197,11 @@ final class BookingRequestController extends AbstractController
     }
 
     #[Route('/booking/request/{id<\d+>}/close/giver', name: 'app_booking_close_giver')]
+    #[IsGranted('close', 'bookingRequest')]
     public function closeByGiver(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $bookingRequest->setClosedByGiverAt(new DateTimeImmutable());
         $entityManager->flush();
 
@@ -195,6 +216,8 @@ final class BookingRequestController extends AbstractController
 
     private function checkClose(BookingRequest $bookingRequest, EntityManagerInterface $entityManager)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         if($bookingRequest->getClosedByEaterAt() && $bookingRequest->getClosedByGiverAt())
         {
             $bookingRequest->setClosedAt(new DateTimeImmutable());
@@ -203,8 +226,11 @@ final class BookingRequestController extends AbstractController
     }
 
     #[Route('/booking/request/{id<\d+>}/delete', name: 'app_booking_delete')]
+    #[IsGranted('edit', 'bookingRequest')]
     public function delete(BookingRequest $bookingRequest, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $entityManager->remove($bookingRequest);
         $entityManager->flush();
         
