@@ -6,11 +6,6 @@
 
 <h1 class="title is-3 has-text-centered">Poster un nouveau repas</h1>
     
-    <div class="notification is-warning has-text-centered" id="geoloc_warning">
-        <p>Les services de géolocalisation ne sont pas disponibles sur votre navigateur.</p>
-        <p><strong>L'adresse définie dans votre profil sera utilisée pour localiser le repas. Vous pouvez la modifier en <a href="{{ path('app_profile') }}">cliquant ici</a></strong></p>
-        <p>Nous vous conseillons d'utiliser Google Chrome</p>
-    </div>
 
 {{ form_errors(createForm) }}
 
@@ -53,8 +48,11 @@
         {{ form_errors(createForm.tags) }}
     </div>
 
-    {{ form_widget(createForm.latitude) }}
-    {{ form_widget(createForm.longitude) }}
+    
+    <div class="notification is-info has-text-centered" id="geoloc_warning">
+        <p>L'adresse définie dans votre profil sera utilisée pour localiser le repas. Vous pouvez la modifier en <a href="{{ path('app_profile') }}">cliquant ici</a></p>
+        <p><strong>Une fois un repas créé à une adresse, celle-ci n'est pas modifiable</strong>. Modifiez votre adresse avant si besoin</p>
+    </div>
 
     <div class="field is-grouped is-justify-content-center">
         <div class="control">
@@ -64,50 +62,4 @@
 
 {{ form_end(createForm) }}
                     
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-
-        const inpLatitude   = document.getElementById('meal_create_form_latitude');
-        const inpLongitude  = document.getElementById('meal_create_form_longitude');
-
-        const btnSubmit     = document.getElementById('meal_create_form_submit');
-
-        const pWarning      = document.getElementById('geoloc_warning');
-        const dAddress      = document.getElementById('address_field');
-
-        //btnSubmit.disabled = true;
-        pWarning.hidden = true;
-
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-
-                    if (inpLatitude && inpLongitude) {
-
-                        inpLatitude.value = position.coords.latitude;
-                        inpLongitude.value = position.coords.longitude;
-
-                        dAddress.hidden = true;
-                    }
-                },
-
-                function (error) {
-
-                    pWarning.hidden = false;
-                    console.error(error);
-                }
-            );
-        } else {
-            console.warn('La géolocalisation n’est pas disponible dans ce navigateur.');
-        }
-    });
-</script>
-
-
 {% endblock %}

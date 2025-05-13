@@ -59,29 +59,13 @@ final class MealController extends AbstractController
                 }
             }
 
-            $location = new Address();
-
-            $latitude   = $createForm->get('latitude')->getData();
-            $longitude  = $createForm->get('longitude')->getData();
-            
-            if($latitude && $longitude) {
-
-                $location
-                    ->setLatitude($latitude)
-                    ->setLongitude($longitude);
-            }
-            else
-            {
-                $location = $currentUser->getMainAddress();
-            }
+            $location = $currentUser->getMainAddress();
             
             if(!$location) {
 
                 $this->addFlash('error', "Nous n'avons pas pu récupérer votre géolocalisation et vous n'avez pas renseigné d'adresse dans votre profil. Au moins l'une des deux informations est nécessaire pour pouvoir déposer un repas sur Don'Eat");
                 return $this->redirectToRoute('app_profile');
             }
-            
-            $entityManager->persist($location);
 
             $meal->setLocation($location);
 

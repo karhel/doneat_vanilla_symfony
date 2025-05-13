@@ -41,9 +41,6 @@ class MealCreateForm extends AbstractType
                 'multiple' => true,
                 'required' => false
             ])
-            
-            ->add('latitude',   HiddenType::class, ['mapped' => false])
-            ->add('longitude',  HiddenType::class, ['mapped' => false])
         ;
     }
 
