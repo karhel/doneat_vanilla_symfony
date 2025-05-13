@@ -45,7 +45,7 @@
         {% if actions %}
         <footer class="card-footer">
             {% if is_granted('book', meal) %}
-            <div class="card-footer-item"><a href="{{ path('app_meal_book_request', { id: meal.id }) }}" class="button is-medium is-success">Réserver !</a></div>
+            {# <div class="card-footer-item"><a href="{{ path('app_meal_book_request', { id: meal.id }) }}" class="button is-medium is-success">Réserver !</a></div> #}
             {% endif %}
 
             {% if is_granted('edit', meal) %}

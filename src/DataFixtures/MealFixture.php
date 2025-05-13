@@ -42,6 +42,8 @@ class MealFixture extends Fixture implements DependentFixtureInterface
         }
 
         $arrUsers = $manager->getRepository(User::class)->findAll();
+
+        /** @var User $user */
         foreach($arrUsers as $user)
         {
             $nbrOfMeals = $this->faker->numberBetween(self::NUMBER_OF_MEAL_PER_USER[0], self::NUMBER_OF_MEAL_PER_USER[1]);
@@ -53,7 +55,7 @@ class MealFixture extends Fixture implements DependentFixtureInterface
                     ->setTitle($this->faker->sentence(5))
                     ->setDescription($this->faker->text())
                     ->setCreatedBy($user)
-                    ->setAddress($user->getAddress())
+                    ->setLocation($user->getMainAddress())
                     ->setCreatedAt(new DateTimeImmutable());
 
                 $manager->persist($objMeal);

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Address;
 use Faker\Factory;
 use App\Entity\User;
 use Faker\Generator;
@@ -33,8 +34,14 @@ class UserFixture extends Fixture
             ->setFirstname('John')
             ->setLastname('Doe')
             ->setPassword($this->userPasswordHasher->hashPassword($objUser, $plainPassword))
-            ->setRoles(["ROLE_ADMIN"])
-            ->setAddress($this->faker->address());
+            ->setRoles(["ROLE_ADMIN"]);
+
+        $objAddress = new Address();
+        $objAddress->setAddress($this->faker->address());
+
+        $manager->persist($objAddress);
+
+        $objUser->setMainAddress($objAddress);
 
         $manager->persist($objUser);
         
@@ -44,8 +51,14 @@ class UserFixture extends Fixture
             $objUser->setEmail($this->faker->email())
                 ->setFirstname($this->faker->firstName())
                 ->setLastname($this->faker->lastName())
-                ->setAddress($this->faker->address())
                 ->setPassword($this->userPasswordHasher->hashPassword($objUser, $this->faker->password()));
+
+            $objAddress = new Address();
+            $objAddress->setAddress($this->faker->address());
+
+            $manager->persist($objAddress);
+
+            $objUser->setMainAddress($objAddress);
 
             $manager->persist($objUser);
         }
