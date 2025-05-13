@@ -24,8 +24,12 @@ final class BookingRequestController extends AbstractController
         return $this->render('booking_request/index.html.twig', [
 
             'pendingRequests'   => $bookingRepository->findByStatusAndRequestedBy($this->getUser(), BookingRequest::STATUS_PENDING),
-            
-            'pendingApproval'   => $bookingRepository->findByStatusAndMealCreatedBy($this->getUser(), BookingRequest::STATUS_PENDING)
+
+            'pendingApproval'   => $bookingRepository->findByStatusAndMealCreatedBy($this->getUser(), BookingRequest::STATUS_PENDING),
+
+            'pendingClosureByGiver'      => $bookingRepository->findByCreatedByAndToClose($this->getUser()),
+
+            'pendingClosureByEater'      => $bookingRepository->findByRequestedByAndToClose($this->getUser())
         ]);
     }
 
@@ -136,8 +140,7 @@ final class BookingRequestController extends AbstractController
                 $bookingRequest
                     ->setValidatedAt($date)
                     ->setClosedAt($date)
-                    ->setStatus(BookingRequest::STATUS_REFUSED);
-                
+                    ->setStatus(BookingRequest::STATUS_REFUSED);                
 
                 // TODO Le mail
 
@@ -155,10 +158,22 @@ final class BookingRequestController extends AbstractController
         ]);
     }
 
-    #[Route('/booking/request/{id<\d+>}/close', name: 'app_booking_close')]
-    public function close(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/booking/request/{id<\d+>}/close/eater', name: 'app_booking_close_eater')]
+    public function closeByEater(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $bookingRequest->setClosedAt(new DateTimeImmutable());
+        $bookingRequest->setClosedByEaterAt(new DateTimeImmutable());
+        $entityManager->flush();
+
+        // TODO le mail
+
+        $this->addFlash('success', "La réservation a été cloturée avec succès");
+        return $this->redirectToRoute('app_meal');
+    }
+
+    #[Route('/booking/request/{id<\d+>}/close/giver', name: 'app_booking_close_giver')]
+    public function closeByGiver(BookingRequest $bookingRequest, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $bookingRequest->setClosedByGiverAt(new DateTimeImmutable());
         $entityManager->flush();
 
         // TODO le mail

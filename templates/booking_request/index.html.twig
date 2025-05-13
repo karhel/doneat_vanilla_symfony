@@ -4,6 +4,63 @@
 
 {% block content %}
 
+<h2 class="title is-2">Mes demandes en attente de cloture</h2>
+<p>La cloture de la réservation valide le fait que le repas ait été récupéré. Elle devra être faite par vous et la personne avec qui vous avez échangé</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom du repas</th>
+            <th>Par</th>
+
+            <th>Demande envoyée le</th>
+            <th>Par</th>
+            <th>Commentaire de réservation</th>
+
+            <th>Demande validée le</th>
+            <th>Commentaire de validation</th>
+
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in pendingClosureByGiver %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.meal.createdBy }}</td>
+
+            <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.requestedBy }}</td>
+            <td>{{ book.requestComment }}</td>
+
+            <td>{{ book.validatedAt|date }}</td>
+            <td>{{ book.validationComment }}</td>
+
+            <td>
+                <a class="button" href="{{ path('app_booking_close_giver', { id: book.id }) }}">Cloturer</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+        {% for book in pendingClosureByEater %}
+        <tr>
+            <td>{{ book.meal.title }}</td>
+            <td>{{ book.meal.createdBy }}</td>
+
+            <td>{{ book.requestedAt|date }}</td>
+            <td>{{ book.requestedBy }}</td>
+            <td>{{ book.requestComment }}</td>
+
+            <td>{{ book.validatedAt|date }}</td>
+            <td>{{ book.validationComment }}</td>
+
+            <td>
+                <a class="button" href="{{ path('app_booking_close_eater', { id: book.id }) }}">Cloturer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 
 <h2 class="title is-2">Mes demandes reçues en cours</h2>
 <table class="table">

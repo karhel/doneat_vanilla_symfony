@@ -44,6 +44,12 @@ class BookingRequest
     #[ORM\Column]
     private ?int $status = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $closedByGiverAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $closedByEaterAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,6 +147,30 @@ class BookingRequest
     public function setStatus(int $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getClosedByGiverAt(): ?\DateTimeImmutable
+    {
+        return $this->closedByGiverAt;
+    }
+
+    public function setClosedByGiverAt(?\DateTimeImmutable $closedByGiverAt): static
+    {
+        $this->closedByGiverAt = $closedByGiverAt;
+
+        return $this;
+    }
+
+    public function getClosedByEaterAt(): ?\DateTimeImmutable
+    {
+        return $this->closedByEaterAt;
+    }
+
+    public function setClosedByEaterAt(?\DateTimeImmutable $closedByEaterAt): static
+    {
+        $this->closedByEaterAt = $closedByEaterAt;
 
         return $this;
     }

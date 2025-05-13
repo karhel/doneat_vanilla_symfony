@@ -69,4 +69,31 @@ class BookingRequestRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function findByRequestedByAndToClose(User $user): array
+    {
+        $query = $this->createQueryBuilder('b');
+
+        $query
+            ->andWhere('b.requestedBy = :user')
+            ->andWhere($query->expr()->isNull('b.closedAt'))
+            ->andWhere($query->expr()->isNull('b.closedByEaterAt'))
+            ->setParameter('user', $user);
+            
+        return $query->getQuery()->getResult();
+    }
+
+    public function findByCreatedByAndToClose(User $user): array
+    {
+        $query = $this->createQueryBuilder('b');
+
+        $query     
+            ->innerJoin('b.meal', 'm')
+            ->andWhere('m.createdBy = :user')
+            ->andWhere($query->expr()->isNull('b.closedAt'))
+            ->andWhere($query->expr()->isNull('b.closedByGiverAt'))
+            ->setParameter('user', $user);
+            
+        return $query->getQuery()->getResult();
+    }
 }
