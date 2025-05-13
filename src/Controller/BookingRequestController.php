@@ -34,10 +34,15 @@ final class BookingRequestController extends AbstractController
     }
 
     #[Route('/booking/archives', name: 'app_booking_archives', methods: ['GET'])]
-    public function archives(): Response
+    public function archives(BookingRequestRepository $bookingRepository): Response
     {
-        return $this->render('booking_request/index.html.twig', [
-            'controller_name' => 'BookingRequestController',
+        return $this->render('booking_request/archives.html.twig', [
+            
+            'refusedByMe'       => $bookingRepository->findByStatusAndMealCreatedBy($this->getUser(), BookingRequest::STATUS_REFUSED, true),
+            'refusedToMe'       => $bookingRepository->findByStatusAndRequestedBy($this->getUser(), BookingRequest::STATUS_REFUSED, true),
+
+            'closedByMe'        => $bookingRepository->findByStatusAndMealCreatedBy($this->getUser(), BookingRequest::STATUS_VALIDATED, true),
+            'closedToMe'        => $bookingRepository->findByStatusAndRequestedBy($this->getUser(), BookingRequest::STATUS_VALIDATED, true)
         ]);
     }
 
