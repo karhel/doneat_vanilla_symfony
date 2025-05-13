@@ -167,6 +167,9 @@ final class BookingRequestController extends AbstractController
         // TODO le mail
 
         $this->addFlash('success', "La réservation a été cloturée avec succès");
+
+        $this->checkClose($bookingRequest, $entityManager);
+
         return $this->redirectToRoute('app_meal');
     }
 
@@ -179,7 +182,19 @@ final class BookingRequestController extends AbstractController
         // TODO le mail
 
         $this->addFlash('success', "La réservation a été cloturée avec succès");
+
+        $this->checkClose($bookingRequest, $entityManager);
+
         return $this->redirectToRoute('app_meal');
+    }
+
+    private function checkClose(BookingRequest $bookingRequest, EntityManagerInterface $entityManager)
+    {
+        if($bookingRequest->getClosedByEaterAt() && $bookingRequest->getClosedByGiverAt())
+        {
+            $bookingRequest->setClosedAt(new DateTimeImmutable());
+            $entityManager->flush();
+        }
     }
 
     #[Route('/booking/request/{id<\d+>}/delete', name: 'app_booking_delete')]
