@@ -77,6 +77,7 @@ class BookingRequestRepository extends ServiceEntityRepository
         $query
             ->andWhere('b.requestedBy = :user')
             ->andWhere($query->expr()->isNull('b.closedAt'))
+            ->andWhere('b.status = 1')
             ->andWhere($query->expr()->isNull('b.closedByEaterAt'))
             ->setParameter('user', $user);
             
@@ -91,6 +92,7 @@ class BookingRequestRepository extends ServiceEntityRepository
             ->innerJoin('b.meal', 'm')
             ->andWhere('m.createdBy = :user')
             ->andWhere($query->expr()->isNull('b.closedAt'))
+            ->andWhere('b.status = 1')
             ->andWhere($query->expr()->isNull('b.closedByGiverAt'))
             ->setParameter('user', $user);
             
